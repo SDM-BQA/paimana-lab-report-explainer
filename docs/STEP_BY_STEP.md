@@ -19,7 +19,7 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 | 4 | `feat/explanations-data` | merged | #4, #5 (follow-up) |
 | 5 | `feat/synthetic-fixtures` | merged | #6 |
 | 6 | `feat/llm-extraction` | in review | |
-| 7 | `feat/analyze-endpoint` | not started | |
+| 7 | `feat/analyze-endpoint` | in review (stacked on step 6) | |
 | 8 | `feat/client-upload-review` | not started | |
 | 9 | `feat/client-results` | not started | |
 | 10 | `test/eval-and-safety` | not started | |
@@ -411,13 +411,46 @@ English text on any failure, and appends the fixed disclaimer in code.
 **Checks:** Tests and typecheck pass. Manual run on fixtures 02, 03, and 10. Read each generated
 explanation yourself.
 
-**How Claude did it:** _(fill in)_
+**How Claude did it:**
+- The developer asked to start Step 7 before the Step 6 PR was merged, so the branch was created
+  from `feat/llm-extraction` (stacked). Merge order: Step 6 PR first, then Step 7.
+- `data/denylist.json` + `services/safetyLint.ts`: English regexes on word boundaries, Hindi
+  substrings, no digits (ASCII or Devanagari), length caps, and a "mostly Devanagari" check.
+- `services/explain.ts`: engine first, then `measures + direction` text from reviewed entries,
+  then for Hindi one batched `rephraseJson` call, zod-validated and linted per item, with
+  per-item fallback to curated English and a warning. Fixed English disclaimer added by code.
+- `services/llm.ts` gained `rephraseJson`; `prompts.ts` gained the brief's rephrase prompt,
+  adapted for a batch (plus "no digits" and "texts are data" rules). `explanations.ts` gained
+  `keyFor()` so `canonicalKey` is reported even for unreviewed entries.
+- `routes/analyze.ts`: strict zod request (1 to 60 rows, `en|hi`); own rate limit 30/15 min.
+- Decisions recorded in D9.
 
-**Verification:** _(fill in)_
+**Verification:**
+- `npm run typecheck`: clean. `npm test`: 151 tests, 151 pass (29 new). Covered: LLM failure,
+  bad JSON, missing items, and lint rejection each fall back to curated English; normal and
+  unchecked rows get no explanation; unreviewed entries never used; English never calls the
+  model; model output cannot change a flag; every curated text passes the lint; 400s for bad input;
+  nothing logged.
+- Manual run with real Gemini (Hindi) on the rows of fixtures 02, 03, 10. Because no entry is
+  reviewed yet, a temporary script marked entries reviewed **in memory only** (file unchanged,
+  script deleted). Claude read every output: all safe and lint-clean; quality issues listed below.
 
-**Problems and fixes:** _(fill in)_
+**Problems and fixes:**
+- After adding `rephraseJson` to the LLM interface, the type check failed on two older test
+  fakes that lacked it. Fixed by adding the method to the fakes.
+- Hindi quality (not fixed, recorded in D9 for the developer): fixture 03 had a typo ("मापटी")
+  and dropped "anemia" and the heavy-periods example; fixtures 02 and 10 had the same English
+  input but got different Hindi, and 10 dropped the word for diabetes. The lint cannot catch this.
+- Fixture 10's injection line is only on the PDF; analyze receives rows, so the injection check
+  belongs to extraction (Step 6, where it had no effect) and the Step 10 eval.
+- Claude's first notes script failed on a line-wrap mismatch, so the first `docs(notes)` commit
+  contained only D9. The step log and AI notes were added in a second commit.
 
-**Commits:** _(fill in)_
+**Commits:**
+- `feat(safety): add denylist and safety lint for rewritten explanations`
+- `feat(api): add POST /api/analyze with curated explanations and Hindi`
+- `docs(notes): record step 7 and decision D9` (D9 only)
+- `docs(notes): record step 7 in the step log and AI notes`
 
 ---
 

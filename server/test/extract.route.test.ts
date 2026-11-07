@@ -26,6 +26,7 @@ function harness(answer: (file: UploadedFile) => Promise<string>) {
       received.push(file);
       return answer(file);
     },
+    rephraseJson: async () => "{}",
   };
   return { llm, received };
 }

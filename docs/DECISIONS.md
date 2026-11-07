@@ -94,3 +94,22 @@ decided, why, and what it costs.
 - **Caveat:** every free-tier model is marked "Used to improve our products: Yes", so the UI must
   warn users not to upload real reports. Requests set `store: false`, but that does not change
   the free-tier terms.
+
+## D9. Analyze flow, Hindi rewriting, and the safety lint (Step 7)
+- **Decided by:** Claude's design within the brief; open points flagged for the developer.
+- **What:**
+  - Flags are computed first; the model is only asked to rewrite text afterwards and its output
+    is read as `{ id, text }`, so it cannot change a flag.
+  - Explanation text = the entry's `measures` sentence + the `low` or `high` sentence. Normal and
+    unchecked rows, unreviewed entries, and directions the source does not cover (`null`) get none.
+  - Hindi: one batched Gemini call per request (not one per row) to respect free-tier limits.
+    Every rewrite must pass `safetyLint`; any failure keeps the reviewed English text and adds a
+    warning. English requests never call the model.
+  - The disclaimer is fixed English text added by code. A Hindi disclaimer is not machine-made;
+    if wanted, the developer should write or approve one.
+  - The lint errs towards rejecting: it blocks any digit, and Hindi "आपको" ("to you") outright.
+- **Observed in the Step 7 manual check (real Gemini, fixtures 02, 03, 10):** all rewrites were
+  safe and passed the lint, but translation quality was uneven: one typo, some details dropped, and
+  the same English input gave two different Hindi outputs at temperature 0.
+- **Open for the developer:** keep AI translation, or (more reliable) add reviewed Hindi text to
+  `explanations.json` and use the model only as a fallback. The lint cannot judge accuracy.

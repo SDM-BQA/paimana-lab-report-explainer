@@ -4,7 +4,7 @@ import { extractRows, LlmOutputError } from "../src/services/extraction.js";
 import type { LlmClient } from "../src/services/llm.js";
 
 const file = { buffer: Buffer.from("%PDF-1.7"), mimeType: "application/pdf" as const };
-const llmReturning = (text: string): LlmClient => ({ extractRowsJson: async () => text });
+const llmReturning = (text: string): LlmClient => ({ extractRowsJson: async () => text, rephraseJson: async () => "{}" });
 const row = (testName: string, rawValue: string | null, unit: string | null = null, printedRange: string | null = null) => ({
   testName,
   rawValue,
