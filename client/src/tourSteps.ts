@@ -6,6 +6,8 @@ export interface TourStep {
   target?: string;
   title: string;
   body: string;
+  /** A short screen recording, shown in a wider centred dialog. */
+  video?: { src: string; poster: string; label: string };
 }
 
 // A non-empty tuple type, so the first step is always defined.
@@ -13,6 +15,15 @@ export const TOUR_STEPS: [TourStep, ...TourStep[]] = [
   {
     title: "Welcome to Paimana",
     body: "Paimana compares the values on a lab report with the range printed on that report, and explains them in plain words. This tour takes under a minute.",
+  },
+  {
+    title: "See it in action",
+    body: "A synthetic sample report is read, reviewed, checked, then explained in English and Hindi. The waits for the AI are cut out.",
+    video: {
+      src: "/guide/paimana-guide.mp4",
+      poster: "/guide/paimana-guide-poster.jpg",
+      label: "Screen recording of Paimana checking a synthetic sample report. No sound.",
+    },
   },
   {
     target: "banner",

@@ -141,7 +141,7 @@ export function GuidedTour({ onClose }: { onClose: () => void }) {
       <div
         ref={dialog}
         key={index}
-        className={`tour-dialog${rect ? "" : " tour-dialog-center"}`}
+        className={`tour-dialog${rect ? "" : " tour-dialog-center"}${step.video ? " tour-dialog-wide" : ""}`}
         style={placement}
         role="dialog"
         aria-modal="true"
@@ -159,6 +159,24 @@ export function GuidedTour({ onClose }: { onClose: () => void }) {
         </div>
         <h2 id="tour-title">{step.title}</h2>
         <p id="tour-body">{step.body}</p>
+        {step.video && (
+          // Muted so browsers allow autoplay; controls so it can be paused (WCAG 2.2.2).
+          // No autoplay for people who ask for reduced motion: they press play themselves.
+          <video
+            className="tour-video"
+            src={step.video.src}
+            poster={step.video.poster}
+            aria-label={step.video.label}
+            width={960}
+            height={600}
+            autoPlay={!prefersReducedMotion()}
+            muted
+            loop
+            playsInline
+            controls
+            preload="metadata"
+          />
+        )}
 
         <div className="tour-progress" aria-hidden="true">
           {TOUR_STEPS.map((s, i) => (

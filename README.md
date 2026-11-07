@@ -10,7 +10,11 @@ free server wakes up)
 > value with the range printed on the report and shows general information. Always talk to a doctor.
 > **Demo only: use the sample reports, not real medical data.**
 
-<!-- Screenshots: add images of the app using the SAMPLE reports only, e.g. docs/screenshots/results.png -->
+<p align="center">
+  <img src="docs/media/paimana-guide.gif" width="640"
+       alt="Paimana walkthrough: a synthetic sample report is read into an editable table, checked, shown with range meters and explanations, then switched to Hindi.">
+</p>
+<p align="center"><sub>30-second walkthrough using the synthetic "Mixed results" sample. The waits for the AI are cut out.</sub></p>
 
 ## What it does
 
