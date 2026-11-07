@@ -115,6 +115,18 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   nothing.
 - **Developer note:**
 
+### Step 7: Analyze endpoint (branch `feat/analyze-endpoint`, PR #__)
+- **Claude generated:** safety lint and denylist, the analyze flow with Hindi rewriting and
+  fallback, the route, and 29 tests.
+- **I decided / changed:** started Step 7 before merging Step 6, so the branch is stacked.
+  Pending: Hindi approach (keep AI translation or add reviewed Hindi text, D9).
+- **What worked (instructions or prompts):** computing flags before calling the model, and
+  per-item fallback. Every forced failure in tests showed the reviewed English instead.
+- **What went wrong or surprised me, and how it was caught:** reading the real Hindi outputs
+  showed a typo, dropped details, and two different translations of identical input at
+  temperature 0. All passed the lint, which proves the lint checks safety, not accuracy.
+- **Developer note:**
+
 ## 4. Where AI Was Wrong (highlights)
 
 Curate the best 3 to 5 from the build log: the mistake, how I noticed, the fix.
