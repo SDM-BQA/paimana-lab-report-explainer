@@ -32,9 +32,13 @@ export interface ExtractResponse {
 
 export const LanguageSchema = z.enum(["en", "hi"]);
 
+// `value` is optional here and ignored if sent: the server recomputes it from rawValue (D10), so
+// a row the user edited in the browser can never carry a stale or mismatched number.
+export const AnalyzeRowSchema = RowSchema.extend({ value: RowSchema.shape.value.optional() });
+
 export const AnalyzeRequestSchema = z.strictObject({
   language: LanguageSchema,
-  rows: z.array(RowSchema).min(1).max(MAX_ROWS),
+  rows: z.array(AnalyzeRowSchema).min(1).max(MAX_ROWS),
 });
 export type AnalyzeRequest = z.infer<typeof AnalyzeRequestSchema>;
 
