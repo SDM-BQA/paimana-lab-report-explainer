@@ -24,7 +24,8 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 | 9 | `feat/client-results` | merged | #12 (review data: #11) |
 | 10 | `test/eval-and-safety` | merged | #13 |
 | 11 | `chore/deploy-config` | merged (live) | #14 |
-| 12 | `docs/final` | in review | |
+| 12 | `docs/final` | merged | #15 |
+| 13 | `feat/ui-refresh` | in review | |
 
 Status values: `not started`, `in progress`, `in review`, `merged`.
 
@@ -723,3 +724,44 @@ in any screenshot.
 - `docs(readme): write the full README`
 - `docs(case-study): draft the portfolio case study`
 - `docs(notes): record live deploy checks and step 12`
+
+---
+
+## Step 13: UI refresh
+**Branch:** `feat/ui-refresh`
+
+**Goal:** Make the client look modern (font, icons, colours) without changing any logic.
+
+**Ask Claude (as given):**
+> improve the frontend it so plain looking now add a modern look, with proper icons, font, colors
+> to make it look like modern
+
+**Checks:** `cd client && npm run build` (type check + build) and `npm run lint` pass. Status is
+never shown by colour alone. No real data in any preview.
+
+**How Claude did it:**
+- Added `lucide-react` (icons) and self-hosted variable fonts (Plus Jakarta Sans, Noto Sans
+  Devanagari for Hindi) through `@fontsource-variable`, so no request goes to a font CDN.
+- Rewrote `index.css` around colour tokens: a teal palette, automatic dark mode through
+  `prefers-color-scheme`, softer cards and shadows, and reduced-motion support.
+- Added a top bar and hero, numbered step titles (`StepTitle.tsx`), icon tiles for the three
+  input options with a drag-and-drop zone, icon buttons, summary stat chips, and status-striped
+  result cards. Replaced the Vite default favicon with a Paimana mark.
+- Status icons moved to `statusLook.ts`, so the badge keeps icon + word + colour.
+
+**Verification:**
+- `npm run build` and `npm run lint` pass with no warnings.
+- Screenshots with headless Edge of the built page in light and dark mode, and of the review
+  table and results on a temporary preview page fed with synthetic mock data (deleted before
+  committing). The live server was not running, so the real upload flow was not clicked through.
+
+**Problems and fixes:**
+- Lint warned that `StatusBadge.tsx` exported a constant next to a component (breaks fast
+  refresh); moved the map to `statusLook.ts`.
+- The phone screenshot looked clipped; a check showed headless Edge used a 492 px viewport, not
+  a CSS bug. Grid columns were still made overflow-safe with `min(250px, 100%)`.
+
+**Commits:**
+- `chore(client): add icon and self-hosted font packages`
+- `feat(client): give the interface a modern look`
+- `docs(notes): record step 13`

@@ -183,7 +183,7 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   Step 11 section of STEP_BY_STEP.md), including a real upload matching the truth file 40/40.
 - **Developer note:**
 
-### Step 12: Final docs (branch `docs/final`, PR #__)
+### Step 12: Final docs (branch `docs/final`, PR #15)
 - **Claude generated:** the README, the case study draft, decisions D11 to D13 with an index,
   and the live-deploy verification notes.
 - **I decided / changed:** deployed it myself on Render and Vercel with my own domain (D13).
@@ -192,6 +192,17 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   examples of AI mistakes all come from this log, and the eval caveat is stated next to the 100%.
 - **What went wrong or surprised me, and how it was caught:** the draft miscounted the PRs (14 vs
   15), caught on re-read. All 16 relative links were checked by a script.
+- **Developer note:**
+
+### Step 13: UI refresh (branch `feat/ui-refresh`, PR #__)
+- **Claude generated:** the new visual design: colour tokens with dark mode, self-hosted fonts,
+  lucide icons, hero, step cards, drop zone, stat chips, and a new favicon.
+- **I decided / changed:** asked for a modern look with proper icons, font, and colours.
+- **What worked (instructions or prompts):** keeping logic untouched and checking real
+  screenshots (light, dark, and a synthetic-data results preview) instead of trusting the CSS.
+- **What went wrong or surprised me, and how it was caught:** a lint warning about mixed exports
+  (fixed by moving a constant); a clipped phone screenshot turned out to be a headless browser
+  viewport limit, checked by measuring the viewport width.
 - **Developer note:**
 
 ## 4. Where AI Was Wrong (highlights)
