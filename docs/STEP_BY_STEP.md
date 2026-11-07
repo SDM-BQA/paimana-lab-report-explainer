@@ -20,8 +20,8 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 | 5 | `feat/synthetic-fixtures` | merged | #6 |
 | 6 | `feat/llm-extraction` | merged | #7 |
 | 7 | `feat/analyze-endpoint` | merged | #8 |
-| 8 | `feat/client-upload-review` | in review | |
-| 9 | `feat/client-results` | not started | |
+| 8 | `feat/client-upload-review` | merged | #10 |
+| 9 | `feat/client-results` | in review (stacked on `chore/review-and-png`) | |
 | 10 | `test/eval-and-safety` | not started | |
 | 11 | `chore/deploy-config` | not started | |
 | 12 | `docs/final` | not started | |
@@ -535,13 +535,33 @@ and the disclaimer visible on the page.
 **Checks:** End to end locally: sample report in, results out, language toggle works, unchecked
 rows explain why.
 
-**How Claude did it:** _(fill in)_
+**How Claude did it:**
+- The review commit (all 10 entries `reviewed: true`, plus the PNG) had not reached `main`: the
+  files were still uncommitted. Claude committed them on `chore/review-and-png` for the
+  developer (review content unchanged; commit message says so). Step 9 is stacked on that branch.
+- `StatusBadge`: symbol + word + colour (▲ High, ▼ Low, ✓ In range, ? Not checked).
+- `ResultsView`: summary counts, one card per test (result, printed range, badge), "why not
+  checked" for unchecked rows, explanation with an origin note (reviewed text vs AI translation,
+  safety-checked), `lang="hi"` on Hindi text, server disclaimer.
+- EN/HI toggle (`aria-pressed` buttons) re-runs analyze on the snapshot of rows that produced the
+  results. UI labels stay English (D9). `Footer`: permanent "Not medical advice" notice.
 
-**Verification:** _(fill in)_
+**Verification:**
+- `npm run build` and `oxlint`: clean. Contrast computed for every colour pair: all AA (5.59 to 15.29:1).
+- Real API + Gemini via curl: fixture 04 in English → 1 low, 3 high, 4 in range, all four flagged rows
+  with curated explanations; same rows in Hindi → identical statuses, four rephrased Hindi texts, no
+  warnings; fixture 06 → two "Unit mismatch …" reasons. API log: startup line only.
+- Claude read all four Hindi texts: safe, shorter than the English, details dropped (e.g. anemia,
+  allergies, stroke), nothing added.
+- Not verified by Claude: the UI in a real browser (developer's manual check).
 
-**Problems and fixes:** _(fill in)_
+**Problems and fixes:** No issues found in the code. The developer's review commit was missing
+from `main` (see above).
 
-**Commits:** _(fill in)_
+**Commits:**
+- `chore(data): mark explanation entries reviewed and add PNG of report 02` (developer's review, committed by Claude, on `chore/review-and-png`)
+- `feat(client): add results view with badges, explanations, and EN/HI toggle`
+- `docs(notes): record step 9`
 
 ---
 
