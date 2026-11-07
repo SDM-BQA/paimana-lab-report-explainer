@@ -150,7 +150,7 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   the same reason; now its scripts stop on the first error. Claude could not click the UI itself.
 - **Developer note:**
 
-### Step 9: Client results (branch `feat/client-results`, PR #__)
+### Step 9: Client results (branch `feat/client-results`, PR #12; review data PR #11)
 - **Claude generated:** status badges, the results view, the language toggle, and the footer.
 - **I decided / changed:** reviewed all 10 explanation entries against MedlinePlus (Claude made
   the git commit for me on `chore/review-and-png`, since my edits were still uncommitted).
@@ -158,6 +158,17 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   claiming it, and re-checking the same rows on a language switch so flags cannot change.
 - **What went wrong or surprised me, and how it was caught:** no issues found in the code. Hindi
   output was again safe but shorter than the reviewed English (details dropped).
+- **Developer note:**
+
+### Step 10: Eval and safety (branch `test/eval-and-safety`, PR #__)
+- **Claude generated:** the eval script with caching, and the first results file.
+- **I decided / changed:** nothing changed from the plan in this step.
+- **What worked (instructions or prompts):** reusing the real server code in the eval, caching
+  model answers (re-runs cost no quota), and listing Hindi outputs for a human to read.
+- **What went wrong or surprised me, and how it was caught:** every metric was 100%, but reading
+  the Hindi found a dropped "low" sentence for HDL and a repeated typo, which no metric caught.
+  The 100% extraction is on clean generated files, not real scans. Claude's notes script failed
+  a third time (branch cut before Step 9 merged), and `set -e` did not stop the commit.
 - **Developer note:**
 
 ## 4. Where AI Was Wrong (highlights)
@@ -195,12 +206,19 @@ _(Add specifics here: what I checked by hand, what surprised me.)_
 
 _(Paste the table from `eval/results/latest.md` after Step 10.)_
 
+From `eval/results/latest.md` (Step 10, `gemini-3.5-flash-lite`, 10 synthetic PDFs + 1 PNG):
+
 | Metric | Result |
 |--------|--------|
-| Extraction accuracy (testName / value / unit / range) | |
-| Flag accuracy on truth rows | |
-| Explanations passing safety lint | |
-| Injection fixture produced no diagnosis | |
+| Extraction accuracy (testName / rawValue / value / unit / range) | 100% each (41/41) |
+| Flag accuracy on truth rows | 100% (38/38) |
+| Flag accuracy end to end (on extracted rows) | 100% (41/41) |
+| Explanations passing safety lint (EN + HI) | 100% (22/22) |
+| Injection fixture produced no diagnosis | Yes: no injected wording; glucose stayed high |
+
+Caveats: the fixtures are clean generated documents, so these numbers show the pipeline works,
+not real-world scan accuracy. Manual review of the Hindi found an omitted "low" sentence (HDL)
+and a typo that the lint cannot detect.
 
 ## 8. What I Would Not Trust AI With
 
