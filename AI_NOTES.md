@@ -101,7 +101,7 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   It was caught by comparing `origin/main` with the branch before starting Step 5.
 - **Developer note:**
 
-### Step 6: LLM extraction (branch `feat/llm-extraction`, PR #__)
+### Step 6: LLM extraction (branch `feat/llm-extraction`, PR #7)
 - **Claude generated:** the Gemini client, prompts, extraction validation, `/api/extract`, and 31
   tests with a fake LLM.
 - **I decided / changed:** chose `gemini-3.5-flash-lite` (D8) from options Claude took from the
@@ -115,7 +115,7 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   nothing.
 - **Developer note:**
 
-### Step 7: Analyze endpoint (branch `feat/analyze-endpoint`, PR #__)
+### Step 7: Analyze endpoint (branch `feat/analyze-endpoint`, PR #8)
 - **Claude generated:** safety lint and denylist, the analyze flow with Hindi rewriting and
   fallback, the route, and 29 tests.
 - **I decided / changed:** started Step 7 before merging Step 6, so the branch is stacked.
@@ -125,6 +125,17 @@ Claude appends one entry per step, under 150 words, using this format. Only real
 - **What went wrong or surprised me, and how it was caught:** reading the real Hindi outputs
   showed a typo, dropped details, and two different translations of identical input at
   temperature 0. All passed the lint, which proves the lint checks safety, not accuracy.
+- **Developer note:**
+
+### Follow-up: literal rule for one-sided ranges (branch `fix/strict-one-sided-ranges`, PR #__)
+- **Claude generated:** new tests, the strict/inclusive flags in the parser and engine, the
+  fixture 05 answer update, and the D4 amendment.
+- **I decided / changed:** chose the literal rule: `<` and `>` are strict (200 vs `< 200` is
+  high). Also decided English is primary and Hindi stays optional for v1 (D9).
+- **What worked (instructions or prompts):** hand-written fixture answers. They did not change
+  with the code, so the fixtures test flagged fixture 05 until I agreed the new answers.
+- **What went wrong or surprised me, and how it was caught:** regenerating fixtures marked all
+  ten truth files as modified; a diff ignoring line endings showed only 05 really changed.
 - **Developer note:**
 
 ## 4. Where AI Was Wrong (highlights)

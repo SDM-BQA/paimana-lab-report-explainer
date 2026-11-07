@@ -26,10 +26,12 @@ decided, why, and what it costs.
   `services/llm.ts`. Claude Code is the coding assistant only and is never called by the app.
 - **Why:** free to run; the Claude Pro plan does not include API credits for apps.
 
-## D4. Range and flag rules (Step 3)
-- **Decided by:** the brief (Section 6). One point is flagged for the developer below.
+## D4. Range and flag rules (Step 3, amended after Step 7)
+- **Decided by:** the brief (Section 6); the one-sided rule was changed by the developer (see Amendment).
 - **Rules, as implemented in `rangeParser.ts` and `rangeEngine.ts`:**
-  - Limits are **inclusive**: a value equal to a printed limit is `normal`.
+  - Two-sided limits are **inclusive**: a value equal to either end of `13 - 17` is `normal`.
+  - One-sided limits follow the **printed symbol** (see Amendment): `<` and `>` are strict;
+    `<=`, `≤`, `Up to`, `>=`, `≥` are inclusive.
   - One-sided ranges are supported: `< 200`, `<= 200`, `≤ 200`, `Up to 5.0` set only a high limit;
     `> 40`, `>= 40`, `≥ 40` set only a low limit. An upper-only range can never give `low`.
   - Accepted separators: hyphen, en dash, em dash, minus sign, and the word "to".
@@ -41,10 +43,14 @@ decided, why, and what it costs.
   - Missing range, unrecognised text (labels like `Desirable: < 200`, notes in brackets,
     several ranges in one cell, reversed ranges), or a missing/non-finite value give `unchecked`
     with a reason. The parser never guesses.
-- **Flagged for the developer:** strictly read, `< 200` means 200 itself is above the range. The
-  brief's "limits are inclusive" rule is applied to one-sided ranges too, so a value of exactly
-  200 against `< 200` is `normal`. Change this if you prefer the strict reading; the test
-  "value equal to a one-sided limit is normal" pins the current behaviour.
+- **Amendment (developer decision, after Step 7): literal rule for one-sided ranges.**
+  Originally a value equal to any limit was `normal`, so 200 against `< 200` was normal. The
+  developer chose to follow the printed symbol instead: 200 against `< 200` is now `high`, and 40
+  against `> 40` is `low`. Why: the printed range is the source of truth, and the code should not
+  quietly widen what the lab printed; MedlinePlus also describes healthy total cholesterol as
+  "less than 200". Trade-off: some labs print `> 40` where guidelines call only values below 40
+  low, so a value of exactly 40 is flagged `low` (a mild, safe-side flag). Fixture 05's expected
+  answers were updated by hand to match.
 
 ## D5. Explanation entries get a category and a nested interpretation (Step 4)
 - **Decided by:** developer.
@@ -111,5 +117,6 @@ decided, why, and what it costs.
 - **Observed in the Step 7 manual check (real Gemini, fixtures 02, 03, 10):** all rewrites were
   safe and passed the lint, but translation quality was uneven: one typo, some details dropped, and
   the same English input gave two different Hindi outputs at temperature 0.
-- **Open for the developer:** keep AI translation, or (more reliable) add reviewed Hindi text to
-  `explanations.json` and use the model only as a fallback. The lint cannot judge accuracy.
+- **Developer decision (after Step 7):** most reports are in English, so English is the primary
+  language. Hindi stays an optional extra (AI rewrite + lint + English fallback) for v1. Adding
+  reviewed Hindi text to `explanations.json` is a possible later improvement.
