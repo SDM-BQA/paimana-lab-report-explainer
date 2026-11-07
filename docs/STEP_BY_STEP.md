@@ -608,10 +608,16 @@ read the explanation outputs for fixtures 02, 03, and 10.
   All passed the lint, which checks safety, not completeness or accuracy.
 - **Limitation:** 100% extraction is on clean, generated PDFs and a clean screenshot. It shows the
   pipeline works; it does not measure accuracy on real scans or phone photos.
+- Claude's notes script stopped before writing `AI_NOTES.md` because this branch was cut from
+  `main` before Step 9 was merged (its anchor entry was missing), and the commit still went out
+  despite `set -e`. After Step 9 merged, `main` was merged into this branch (progress-table
+  conflict resolved by hand) and the AI notes were added in a separate commit.
 
 **Commits:**
 - `test(eval): add evaluation script and first results`
-- `docs(notes): record step 10`
+- `docs(notes): record step 10` (step log only)
+- merge of `origin/main` (Step 9) into this branch
+- `docs(notes): add step 10 AI notes and evaluation table`
 
 ---
 
