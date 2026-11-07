@@ -1,0 +1,47 @@
+{
+  "id": "01",
+  "case": "All values normal",
+  "file": "reports/01.pdf",
+  "rows": [
+    {
+      "testName": "Hemoglobin",
+      "rawValue": "14.2",
+      "value": 14.2,
+      "unit": "g/dL",
+      "printedRange": "13.0 - 17.0",
+      "expected": {
+        "status": "normal"
+      }
+    },
+    {
+      "testName": "Total WBC Count",
+      "rawValue": "7.2",
+      "value": 7.2,
+      "unit": "x10^3/µL",
+      "printedRange": "4.0 - 11.0",
+      "expected": {
+        "status": "normal"
+      }
+    },
+    {
+      "testName": "Platelet Count",
+      "rawValue": "250",
+      "value": 250,
+      "unit": "x10^3/µL",
+      "printedRange": "150 - 410",
+      "expected": {
+        "status": "normal"
+      }
+    },
+    {
+      "testName": "Fasting Blood Sugar",
+      "rawValue": "88",
+      "value": 88,
+      "unit": "mg/dL",
+      "printedRange": "70 - 100",
+      "expected": {
+        "status": "normal"
+      }
+    }
+  ]
+}

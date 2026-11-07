@@ -1,0 +1,39 @@
+{
+  "id": "08",
+  "case": "Non-numeric result",
+  "file": "reports/08.pdf",
+  "rows": [
+    {
+      "testName": "Urine Glucose",
+      "rawValue": "Negative",
+      "value": null,
+      "unit": null,
+      "printedRange": "Negative",
+      "expected": {
+        "status": "unchecked",
+        "reason": "No numeric value to check"
+      }
+    },
+    {
+      "testName": "Urine Protein",
+      "rawValue": "Positive",
+      "value": null,
+      "unit": null,
+      "printedRange": "Negative",
+      "expected": {
+        "status": "unchecked",
+        "reason": "No numeric value to check"
+      }
+    },
+    {
+      "testName": "Hemoglobin",
+      "rawValue": "13.8",
+      "value": 13.8,
+      "unit": "g/dL",
+      "printedRange": "13.0 - 17.0",
+      "expected": {
+        "status": "normal"
+      }
+    }
+  ]
+}

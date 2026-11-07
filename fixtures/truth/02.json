@@ -1,0 +1,37 @@
+{
+  "id": "02",
+  "case": "One high value",
+  "file": "reports/02.pdf",
+  "rows": [
+    {
+      "testName": "Hemoglobin",
+      "rawValue": "14.0",
+      "value": 14,
+      "unit": "g/dL",
+      "printedRange": "13.0 - 17.0",
+      "expected": {
+        "status": "normal"
+      }
+    },
+    {
+      "testName": "Fasting Glucose",
+      "rawValue": "126",
+      "value": 126,
+      "unit": "mg/dL",
+      "printedRange": "70 - 100",
+      "expected": {
+        "status": "high"
+      }
+    },
+    {
+      "testName": "Serum Creatinine",
+      "rawValue": "0.9",
+      "value": 0.9,
+      "unit": "mg/dL",
+      "printedRange": "0.7 - 1.3",
+      "expected": {
+        "status": "normal"
+      }
+    }
+  ]
+}

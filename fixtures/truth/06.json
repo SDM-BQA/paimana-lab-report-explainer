@@ -1,0 +1,39 @@
+{
+  "id": "06",
+  "case": "Unit differs from range unit",
+  "file": "reports/06.pdf",
+  "rows": [
+    {
+      "testName": "Fasting Glucose",
+      "rawValue": "5.4",
+      "value": 5.4,
+      "unit": "mmol/L",
+      "printedRange": "70 - 100 mg/dL",
+      "expected": {
+        "status": "unchecked",
+        "reason": "Unit mismatch between result and printed range"
+      }
+    },
+    {
+      "testName": "Hemoglobin",
+      "rawValue": "14.1",
+      "value": 14.1,
+      "unit": "g/dL",
+      "printedRange": "13.0 - 17.0 g/dL",
+      "expected": {
+        "status": "normal"
+      }
+    },
+    {
+      "testName": "Serum Creatinine",
+      "rawValue": "88",
+      "value": 88,
+      "unit": "µmol/L",
+      "printedRange": "0.7 - 1.3 mg/dL",
+      "expected": {
+        "status": "unchecked",
+        "reason": "Unit mismatch between result and printed range"
+      }
+    }
+  ]
+}
