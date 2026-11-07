@@ -1,5 +1,21 @@
 # Decisions
 
+| # | Decision | Decided by |
+|---|---|---|
+| D1 | Name: Paimana | Developer |
+| D2 | TypeScript instead of JavaScript | Developer |
+| D3 | Gemini runs the app; Claude only builds it | Developer |
+| D4 | Range rules: two-sided inclusive, one-sided follows the printed symbol, no unit conversion | Brief; amended by developer |
+| D5 | Explanation entries get a category and nested interpretation | Developer |
+| D6 | Sex-based fallback ranges: investigated, deferred to v2 | Developer |
+| D7 | The model copies text; code converts it to numbers | Claude (within the brief) |
+| D8 | Model: gemini-3.5-flash-lite | Developer |
+| D9 | Analyze flow, Hindi rewriting, safety lint; English primary | Claude; English-first by developer |
+| D10 | Server recomputes `value` from `rawValue` | Claude (within the brief) |
+| D11 | No database; stateless, nothing stored or logged | Developer (original plan) |
+| D12 | Explanations come only from curated, sourced, developer-reviewed text | Developer (original plan) |
+| D13 | Hosting: Render (API) + Vercel (site) on a custom domain | Developer |
+
 Short records of decisions that shape Paimana. Newest at the bottom. Each one says what was
 decided, why, and what it costs.
 
@@ -128,3 +144,32 @@ decided, why, and what it costs.
 - **Why:** the review table lets users edit the result text. Re-implementing number parsing in the
   browser would create a second copy of the rule that could drift. Now an edited "14.5" is always
   checked as 14.5, and "Positive" is always unchecked, whatever number travels with it.
+
+## D11. No database: stateless, nothing stored or logged (original plan, recorded in Step 12)
+- **Decided by:** developer, before the build (master instructions).
+- **What:** no database, no accounts, no history. Uploads live in memory for one request (multer
+  memory storage) and are never written to disk. Logs contain only status codes and error types,
+  never request bodies, file names, values, or model output.
+- **Why:** a person's medical results should not be kept by a hobby demo. Each check is a one-time
+  extraction, so there is nothing that needs storing.
+- **Evidence:** tests assert no file name or value appears in logs or error bodies; Step 6 proved
+  with an isolated temp folder that uploads write 0 files.
+- **Cost:** no saved history; users re-upload to check again. The free-tier model provider may still
+  use inputs, which is why the site says not to upload real reports.
+
+## D12. Explanations come only from curated, reviewed text (original plan, recorded in Step 12)
+- **Decided by:** developer, before the build.
+- **What:** every sentence the app can show about a test lives in `explanations.json`, drafted from a
+  named MedlinePlus page and shown only after the developer sets `reviewed: true`. The model may only
+  translate that text (Hindi), which must pass the safety lint or falls back to the English.
+- **Why:** an LLM writing health explanations on the fly can invent or overstate facts.
+- **Cost:** only 10 tests have explanations; other flagged tests show "No explanation is available".
+
+## D13. Hosting: Render + Vercel on a custom domain (Step 11)
+- **Decided by:** developer.
+- **What:** the API runs on Render's free tier (`server/`), the static site on Vercel (`client/`),
+  served at `https://paimana.sundaramtech.dev`. `CORS_ORIGIN` on Render is that one address, so the
+  default `*.vercel.app` address and preview deployments are blocked by CORS on purpose.
+- **Why:** both are free for hobby use; Vercel never holds the API key.
+- **Cost:** Render's free instance sleeps after 15 minutes idle, so the first visit can take about a
+  minute (the site shows a "waking up" message).
