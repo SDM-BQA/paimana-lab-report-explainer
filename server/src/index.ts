@@ -1,5 +1,6 @@
 import { ConfigError, loadConfig, type Config } from "./config.js";
 import { createApp } from "./app.js";
+import { createGeminiClient } from "./services/llm.js";
 
 // Fail fast: refuse to start with a readable message instead of crashing mid-request later.
 let config: Config;
@@ -13,7 +14,7 @@ try {
   throw err;
 }
 
-const app = createApp(config);
+const app = createApp({ ...config, llm: createGeminiClient(config) });
 app.listen(config.PORT, () => {
   console.log(`Paimana API listening on port ${config.PORT}`);
 });

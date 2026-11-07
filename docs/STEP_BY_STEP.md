@@ -17,8 +17,8 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 | 2 | `feat/server-skeleton` | merged | #2 |
 | 3 | `feat/range-engine` | merged | #3 |
 | 4 | `feat/explanations-data` | merged | #4, #5 (follow-up) |
-| 5 | `feat/synthetic-fixtures` | in review | |
-| 6 | `feat/llm-extraction` | not started | |
+| 5 | `feat/synthetic-fixtures` | merged | #6 |
+| 6 | `feat/llm-extraction` | in review | |
 | 7 | `feat/analyze-endpoint` | not started | |
 | 8 | `feat/client-upload-review` | not started | |
 | 9 | `feat/client-results` | not started | |
@@ -350,13 +350,47 @@ validates them with `zod`, and returns them. No file touches disk. Nothing is lo
 **Checks:** Mocked tests and typecheck pass. Manual run on three fixtures shows sensible rows.
 Confirm no uploaded file is written to disk and no values appear in server logs.
 
-**How Claude did it:** _(fill in)_
+**How Claude did it:**
+- Checked the developer's `server/.env` without printing the key: present, ignored by git, and
+  accepted by Google (the model list returned HTTP 200). `GEMINI_MODEL` was empty; the developer
+  chose `gemini-3.5-flash-lite` from options taken from the current pricing page (D8), and
+  Claude set only that line.
+- Installed `@google/genai` 3.0 and `multer` 2.5, then read their installed README and type
+  definitions: `generateContent` with `systemInstruction`, `responseMimeType`,
+  `responseJsonSchema`, `inlineData`, `ApiError.status`, `store`; multer `memoryStorage`,
+  `limits`, `fileFilter`, and `MulterError` (which carries the client file name).
+- **Before building anything,** ran one real call: the model read `fixtures/reports/01.pdf`
+  correctly (4 rows, every field), about 2 s, 800 tokens.
+- `services/llm.ts`: the only Gemini caller. Injected `generate` and `sleep` for tests; retries
+  429/503 twice (1 s, 3 s); 45 s timeout per attempt; `temperature: 0`, `store: false`.
+- `services/prompts.ts`: the brief's extraction prompt and a JSON schema with text fields only.
+- `services/extraction.ts` + `schemas.ts`: JSON parse, zod validation (unknown keys stripped),
+  ids added, `value` computed by `services/values.ts` (D7), 60-row cap, warnings.
+- `routes/extract.ts`: multer memory storage, 5 MB, one file in `report`, PDF/PNG/JPG checked by
+  declared type **and** signature bytes. Errors map to 400 / 429 / 502. `/api/extract` has its
+  own rate limit of 10 per 15 minutes.
 
-**Verification:** _(fill in)_
+**Verification:**
+- `npm run typecheck`: clean. `npm test`: 122 tests, 122 pass (31 new, all with a fake LLM).
+- Real server + real Gemini via `curl` on fixtures 04, 06, and 10: 8/8, 3/3, 2/2 rows; 65/65
+  fields equal to the truth files. Fixture 10's injected text did not appear in the output.
+- Server log for the whole run contained only "Paimana API listening on port …".
+- Disk check: the first run showed new `.tmp` files in the shared Windows temp folder. Claude
+  inspected them (the one still present was 19 MB with no PDF header and no fixture text; the
+  others had already vanished), then re-ran the built server with its **own empty temp folder**:
+  2 uploads, 0 files written there, 0 new files in the project.
 
-**Problems and fixes:** _(fill in)_
+**Problems and fixes:**
+- A new test failed: it checked the JSON schema for patient fields with a substring regex, which
+  matched "age" inside "printedRange" and "name" inside "testName". The code was fine; the test was
+  wrong. Fixed by comparing the exact property names.
+- The unexplained temp files during the manual run (see Verification) turned out not to be from
+  this server, proven by the isolated-temp re-run.
 
-**Commits:** _(fill in)_
+**Commits:**
+- `feat(llm): add Gemini extraction client with structured output and retry`
+- `feat(api): add POST /api/extract with in-memory upload`
+- `docs(notes): record step 6`
 
 ---
 
