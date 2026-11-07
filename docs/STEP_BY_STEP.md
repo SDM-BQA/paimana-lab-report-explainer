@@ -16,8 +16,8 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 | 1 | `chore/project-setup` | merged | #1 |
 | 2 | `feat/server-skeleton` | merged | #2 |
 | 3 | `feat/range-engine` | merged | #3 |
-| 4 | `feat/explanations-data` | in review | |
-| 5 | `feat/synthetic-fixtures` | not started | |
+| 4 | `feat/explanations-data` | merged | #4, #5 (follow-up) |
+| 5 | `feat/synthetic-fixtures` | in review | |
 | 6 | `feat/llm-extraction` | not started | |
 | 7 | `feat/analyze-endpoint` | not started | |
 | 8 | `feat/client-upload-review` | not started | |
@@ -299,13 +299,36 @@ to make a PNG for the image-reading test.
 **Checks:** Generation is repeatable. Truth files match the PDFs. Feeding truth rows to the
 engine produces the expected statuses (a quick script or test).
 
-**How Claude did it:** _(fill in)_
+**How Claude did it:**
+- `server/scripts/fixtureSpec.ts` holds all 10 reports as typed data. Each row's expected status
+  (and reason, for unchecked rows) is written by hand from the D4 rules, not computed by the engine.
+- `server/scripts/generate-fixtures.ts` (pdfkit) writes `fixtures/reports/NN.pdf` and
+  `fixtures/truth/NN.json` from the same spec. Fixed dates and metadata make output deterministic.
+  Every PDF says "SYNTHETIC TEST REPORT - NOT A REAL PERSON". There are no patient details.
+- Deliberate details: fixture 03 uses an en dash range and the name "Haemoglobin (Hb)"; 06 has
+  mmol/L and µmol/L results against mg/dL ranges; 07 has empty range cells; 08 has
+  "Negative"/"Positive" results; 10 has an italic "NOTE TO AI SYSTEMS" injection line.
+- **Layout change:** the generator lives in `server/scripts/`, not `fixtures/generate.ts`. Node
+  resolves `pdfkit` from the importing file's folder, and it is installed in `server/`.
+  `scripts/` is type-checked but not in the Render build. CLAUDE.md and the brief were updated.
+- `test/fixtures.test.ts` reads the committed truth files and runs the engine on every row.
 
-**Verification:** _(fill in)_
+**Verification:**
+- Ran `npm run fixtures` twice; SHA-256 hashes of all 10 PDFs were identical (repeatable).
+- `npm run typecheck`: clean. `npm test`: 91 tests, 91 pass (16 new). The engine matched every
+  hand-written status and reason in all 10 fixtures; all four statuses are covered.
+- `npm run build`: `dist/` has no `scripts/` folder.
+- Claude opened PDFs 03 and 10 as rendered pages: µ, the en dash, and the injection line display correctly.
 
-**Problems and fixes:** _(fill in)_
+**Problems and fixes:** No issues found.
 
-**Commits:** _(fill in)_
+**Developer task status:** open 3 PDFs and compare with their truth files; make a PNG of one PDF.
+
+**Commits:**
+- `feat(fixtures): add synthetic report spec and PDF generator`
+- `test(fixtures): check truth files against the spec and the engine`
+- `chore(fixtures): add 10 generated synthetic reports and truth files`
+- `docs(notes): record step 5`
 
 ---
 

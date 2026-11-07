@@ -76,7 +76,7 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   twice (exclusive limits; no unit check), and the tests caught both.
 - **Developer note:**
 
-### Step 4: Explanations data (branch `feat/explanations-data`, PR #__)
+### Step 4: Explanations data (branch `feat/explanations-data`, PR #4 and follow-up #5)
 - **Claude generated:** 10 draft entries (all `reviewed: false`), the loader, and 19 tests.
 - **I decided / changed:** added `category` and a nested `interpretation` (D5). Proposed
   sex-based reference ranges, then deferred them to v2 after the sources showed none (D6).
@@ -88,6 +88,17 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   for HDL that does not exist (HTTP 404). It was caught because the page was actually fetched;
   HDL now cites the Cholesterol Levels page. This is exactly why sources must be checked.
   Checking the sources before building also stopped a feature: none gave sex-specific ranges.
+- **Developer note:**
+
+### Step 5: Synthetic fixtures (branch `feat/synthetic-fixtures`, PR #__)
+- **Claude generated:** one typed spec for 10 fake reports, a pdfkit generator, the PDFs and
+  truth files, and a test that runs the engine against every hand-written expected status.
+- **I decided / changed:** nothing changed from the plan in this step.
+- **What worked (instructions or prompts):** one spec drives both the PDFs and the truth files,
+  so they cannot disagree. Expected answers were written by hand, not taken from the engine.
+- **What went wrong or surprised me, and how it was caught:** no issues found. One process
+  surprise: PR #4 was merged before two Step 4 commits were pushed, so they needed follow-up PR #5.
+  It was caught by comparing `origin/main` with the branch before starting Step 5.
 - **Developer note:**
 
 ## 4. Where AI Was Wrong (highlights)
