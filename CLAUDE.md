@@ -12,7 +12,7 @@ Full spec: `PROJECT_BRIEF.md`. Step log: `docs/STEP_BY_STEP.md`. Reflection log:
 - Server tests: `cd server && npm test` (`node --test` through `tsx`)
 - Server type check: `cd server && npm run typecheck` (`tsc --noEmit`)
 - Server build: `cd server && npm run build` (`tsc` to `dist/`, used by Render)
-- Generate synthetic reports: `fixtures/generate.ts` (command set in Step 5)
+- Generate synthetic reports: `cd server && npm run fixtures` (runs `server/scripts/generate-fixtures.ts`)
 - Eval: `cd server && npm run eval`
 - Client dev: `cd client && npm run dev`
 
