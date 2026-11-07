@@ -9,6 +9,7 @@ node_modules/
 # build output
 dist/
 build/
+*.tsbuildinfo
 
 # eval cache (LLM responses; regenerate locally)
 eval/cache/
