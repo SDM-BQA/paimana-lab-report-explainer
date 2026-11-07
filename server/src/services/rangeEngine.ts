@@ -42,9 +42,14 @@ export function evaluate(input: EngineInput): EngineResult {
   }
 
   const range = { low: parsed.low, high: parsed.high };
-  // Limits are inclusive: a value equal to a printed limit is normal.
-  if (range.low !== null && value < range.low) return { status: "low", range, reason: REASONS.low };
-  if (range.high !== null && value > range.high) return { status: "high", range, reason: REASONS.high };
+  // Literal rule (D4): follow the printed operator. "13 - 17", "<=", "≥", "up to" include the
+  // limit; "<" and ">" do not, so 200 against "< 200" is high.
+  if (range.low !== null && (parsed.lowInclusive ? value < range.low : value <= range.low)) {
+    return { status: "low", range, reason: REASONS.low };
+  }
+  if (range.high !== null && (parsed.highInclusive ? value > range.high : value >= range.high)) {
+    return { status: "high", range, reason: REASONS.high };
+  }
   return { status: "normal", range, reason: REASONS.normal };
 }
 

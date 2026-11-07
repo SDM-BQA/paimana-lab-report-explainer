@@ -206,8 +206,9 @@ Do not put numeric reference ranges in this file in v1; the printed range on the
 source of truth.
 
 Status rules (document in `docs/DECISIONS.md`):
-- Limits are **inclusive**: a value equal to a limit is `normal`.
-- One-sided ranges like `< 200` or `> 40` are supported.
+- Two-sided limits are **inclusive**: a value equal to either end is `normal`.
+- One-sided ranges follow the printed symbol (D4 amendment): `<` and `>` are strict, so 200
+  against `< 200` is `high`; `<=`, `≤`, `Up to`, `>=`, `≥` are inclusive.
 - Units: if the row's unit and a unit written inside the range disagree, status is `unchecked`
   with reason "unit mismatch". No silent conversion.
 - Missing, unparseable, or non-numeric → `unchecked` with a reason. Never guess.

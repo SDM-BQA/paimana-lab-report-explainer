@@ -2,11 +2,43 @@ import { describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { parseRange, type ParsedRange } from "../src/services/rangeParser.js";
 
-function ok(text: string): Extract<ParsedRange, { ok: true }> {
+type Parsed = Extract<ParsedRange, { ok: true }>;
+
+function parsed(text: string): Parsed {
   const result = parseRange(text);
   assert.ok(result.ok, `expected "${text}" to parse, got: ${result.ok ? "" : result.reason}`);
   return result;
 }
+
+/** Limits and unit only; strictness has its own tests below. */
+function ok(text: string): Omit<Parsed, "lowInclusive" | "highInclusive"> {
+  const { lowInclusive: _l, highInclusive: _h, ...rest } = parsed(text);
+  return rest;
+}
+
+const strictness = (text: string) => {
+  const { lowInclusive, highInclusive } = parsed(text);
+  return { lowInclusive, highInclusive };
+};
+
+describe("parseRange: strict vs inclusive limits (D4, literal rule)", () => {
+  test("two-sided ranges include both limits", () => {
+    assert.deepEqual(strictness("13.0 - 17.0"), { lowInclusive: true, highInclusive: true });
+    assert.deepEqual(strictness("70 to 100"), { lowInclusive: true, highInclusive: true });
+  });
+
+  test("< and > are strict", () => {
+    assert.equal(strictness("< 200").highInclusive, false);
+    assert.equal(strictness("<200").highInclusive, false);
+    assert.equal(strictness("> 40").lowInclusive, false);
+    assert.equal(strictness(">40 mg/dL").lowInclusive, false);
+  });
+
+  test("<=, ≤, 'up to', >=, ≥ are inclusive", () => {
+    for (const t of ["<= 200", "≤ 200", "Up to 200"]) assert.equal(strictness(t).highInclusive, true, t);
+    for (const t of [">= 40", "≥ 40"]) assert.equal(strictness(t).lowInclusive, true, t);
+  });
+});
 
 function fails(text: string | null | undefined, kind: "missing" | "unparseable"): void {
   const result = parseRange(text);

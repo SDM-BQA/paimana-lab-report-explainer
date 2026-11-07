@@ -189,6 +189,13 @@ Section 12 of the brief has a test.
 - No issues found. The code passed every test on its first run, which is why the mutation check
   was added: to confirm the tests can actually fail.
 
+**Later change (branch `fix/strict-one-sided-ranges`, after Step 7):** the developer chose the
+literal rule for one-sided ranges (D4 amendment). Tests were changed first and failed (4), then
+the parser gained `lowInclusive`/`highInclusive` and the engine follows them. The fixtures test then
+failed on fixture 05, whose hand-written answers still said normal; they were updated by hand
+(Total Cholesterol 200 vs `< 200` → high, HDL 40 vs `> 40` → low). PDF 05 regenerated
+byte-identical. 156/156 tests pass.
+
 **Commits:**
 - `test(engine): specify range parser and engine behaviour before code`
 - `feat(engine): add deterministic range parser and flag engine`

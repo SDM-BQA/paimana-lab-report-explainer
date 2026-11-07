@@ -100,13 +100,14 @@ export const FIXTURES: Fixture[] = [
   {
     id: "05",
     title: "Boundary Values Panel",
-    case: "Values exactly on limits (inclusive = normal)",
+    case: "Values exactly on limits (literal rule)",
     rows: [
       r("Hemoglobin", "13.0", "g/dL", "13.0 - 17.0", normal),
       r("Fasting Glucose", "100", "mg/dL", "70 - 100", normal),
-      // D4: inclusive rule also applies to one-sided ranges.
-      r("Total Cholesterol", "200", "mg/dL", "< 200", normal),
-      r("HDL Cholesterol", "40", "mg/dL", "> 40", normal),
+      // D4 literal rule: two-sided limits are included, but "<" and ">" are strict,
+      // so a value equal to the limit is outside the range.
+      r("Total Cholesterol", "200", "mg/dL", "< 200", high),
+      r("HDL Cholesterol", "40", "mg/dL", "> 40", low),
       r("TSH", "0.4", "µIU/mL", "0.4 - 4.0", normal),
     ],
   },
