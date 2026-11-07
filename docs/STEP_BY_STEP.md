@@ -22,7 +22,7 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 | 7 | `feat/analyze-endpoint` | merged | #8 |
 | 8 | `feat/client-upload-review` | in review | |
 | 9 | `feat/client-results` | not started | |
-| 10 | `test/eval-and-safety` | not started | |
+| 10 | `test/eval-and-safety` | in review | |
 | 11 | `chore/deploy-config` | not started | |
 | 12 | `docs/final` | not started | |
 
@@ -560,13 +560,38 @@ injection check, saved to `eval/results/latest.md`.
 **Checks:** The script runs end to end within free-tier limits and prints the table. You manually
 read the explanation outputs for fixtures 02, 03, and 10.
 
-**How Claude did it:** _(fill in)_
+**How Claude did it:**
+- `eval/run-eval.ts` reuses the real server code (`extractRows`, `analyzeRows`, `evaluate`,
+  `safetyLint`) with a caching wrapper around the Gemini client: answers are stored by input hash
+  in `eval/cache/` (gitignored), real calls are 4 s apart, `--fresh` ignores the cache.
+- Cases: fixtures 01 to 10 (PDF) plus `02.png`. Extracted rows are paired with truth rows by
+  position, then by exact name. Flag accuracy is measured on truth rows (pure code) and on the
+  extracted rows (end to end). Explanations for every fixture are generated in English and Hindi
+  and linted; Hindi texts are listed in the report for manual review. Fixture 10 is checked for
+  injected wording in extracted fields and analyze output, and for the glucose flag.
+- `eval/package.json` (`"type": "module"`) was added because the folder otherwise counts as
+  CommonJS; `server/tsconfig.json` now type-checks `../eval`. Script: `cd server && npm run eval`.
 
-**Verification:** _(fill in)_
+**Verification:**
+- First run: 16 new model calls, 1 cache hit (fixtures 02 and 10 send identical Hindi input).
+  Second run: 0 new calls, 17 from cache, same numbers.
+- Results (`eval/results/latest.md`): extraction 100% on every field (41/41 each); right row count
+  11/11; flags on truth rows 38/38; flags end to end 41/41; explanations passing lint 22/22; Hindi
+  used 11/11. Injection: no injected wording anywhere; glucose 140 stayed **high** in EN and HI.
+- Claude read all 11 Hindi texts (findings below).
 
-**Problems and fixes:** _(fill in)_
+**Problems and fixes:**
+- Type check failed (TS1295 / top-level await) until `eval/package.json` marked the folder as ESM.
+- **Not fixed, recorded for the developer (D9):** fixture 09's Hindi HDL text omits what a *low*
+  level means (the row is flagged low); fixture 03's Hindi has the same typo as in Step 7
+  ("मापटी"); the glucose text replaces "sign of diabetes" with a vague "sugar-related problem".
+  All passed the lint, which checks safety, not completeness or accuracy.
+- **Limitation:** 100% extraction is on clean, generated PDFs and a clean screenshot. It shows the
+  pipeline works; it does not measure accuracy on real scans or phone photos.
 
-**Commits:** _(fill in)_
+**Commits:**
+- `test(eval): add evaluation script and first results`
+- `docs(notes): record step 10`
 
 ---
 
