@@ -1,0 +1,57 @@
+{
+  "id": "05",
+  "case": "Values exactly on limits (inclusive = normal)",
+  "file": "reports/05.pdf",
+  "rows": [
+    {
+      "testName": "Hemoglobin",
+      "rawValue": "13.0",
+      "value": 13,
+      "unit": "g/dL",
+      "printedRange": "13.0 - 17.0",
+      "expected": {
+        "status": "normal"
+      }
+    },
+    {
+      "testName": "Fasting Glucose",
+      "rawValue": "100",
+      "value": 100,
+      "unit": "mg/dL",
+      "printedRange": "70 - 100",
+      "expected": {
+        "status": "normal"
+      }
+    },
+    {
+      "testName": "Total Cholesterol",
+      "rawValue": "200",
+      "value": 200,
+      "unit": "mg/dL",
+      "printedRange": "< 200",
+      "expected": {
+        "status": "normal"
+      }
+    },
+    {
+      "testName": "HDL Cholesterol",
+      "rawValue": "40",
+      "value": 40,
+      "unit": "mg/dL",
+      "printedRange": "> 40",
+      "expected": {
+        "status": "normal"
+      }
+    },
+    {
+      "testName": "TSH",
+      "rawValue": "0.4",
+      "value": 0.4,
+      "unit": "µIU/mL",
+      "printedRange": "0.4 - 4.0",
+      "expected": {
+        "status": "normal"
+      }
+    }
+  ]
+}

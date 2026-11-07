@@ -1,0 +1,39 @@
+{
+  "id": "07",
+  "case": "Missing printed range",
+  "file": "reports/07.pdf",
+  "rows": [
+    {
+      "testName": "Hemoglobin",
+      "rawValue": "14.5",
+      "value": 14.5,
+      "unit": "g/dL",
+      "printedRange": null,
+      "expected": {
+        "status": "unchecked",
+        "reason": "No printed range on the report"
+      }
+    },
+    {
+      "testName": "TSH",
+      "rawValue": "2.0",
+      "value": 2,
+      "unit": "µIU/mL",
+      "printedRange": null,
+      "expected": {
+        "status": "unchecked",
+        "reason": "No printed range on the report"
+      }
+    },
+    {
+      "testName": "Fasting Glucose",
+      "rawValue": "95",
+      "value": 95,
+      "unit": "mg/dL",
+      "printedRange": "70 - 100",
+      "expected": {
+        "status": "normal"
+      }
+    }
+  ]
+}

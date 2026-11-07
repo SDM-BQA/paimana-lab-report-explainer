@@ -1,0 +1,47 @@
+{
+  "id": "09",
+  "case": "One-sided ranges",
+  "file": "reports/09.pdf",
+  "rows": [
+    {
+      "testName": "Total Cholesterol",
+      "rawValue": "182",
+      "value": 182,
+      "unit": "mg/dL",
+      "printedRange": "< 200",
+      "expected": {
+        "status": "normal"
+      }
+    },
+    {
+      "testName": "HDL Cholesterol",
+      "rawValue": "35",
+      "value": 35,
+      "unit": "mg/dL",
+      "printedRange": "> 40",
+      "expected": {
+        "status": "low"
+      }
+    },
+    {
+      "testName": "Triglycerides",
+      "rawValue": "210",
+      "value": 210,
+      "unit": "mg/dL",
+      "printedRange": "< 150",
+      "expected": {
+        "status": "high"
+      }
+    },
+    {
+      "testName": "HbA1c",
+      "rawValue": "5.4",
+      "value": 5.4,
+      "unit": "%",
+      "printedRange": "< 5.7",
+      "expected": {
+        "status": "normal"
+      }
+    }
+  ]
+}
