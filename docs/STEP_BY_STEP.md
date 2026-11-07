@@ -18,9 +18,9 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 | 3 | `feat/range-engine` | merged | #3 |
 | 4 | `feat/explanations-data` | merged | #4, #5 (follow-up) |
 | 5 | `feat/synthetic-fixtures` | merged | #6 |
-| 6 | `feat/llm-extraction` | in review | |
-| 7 | `feat/analyze-endpoint` | in review (stacked on step 6) | |
-| 8 | `feat/client-upload-review` | not started | |
+| 6 | `feat/llm-extraction` | merged | #7 |
+| 7 | `feat/analyze-endpoint` | merged | #8 |
+| 8 | `feat/client-upload-review` | in review | |
 | 9 | `feat/client-results` | not started | |
 | 10 | `test/eval-and-safety` | not started | |
 | 11 | `chore/deploy-config` | not started | |

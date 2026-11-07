@@ -120,3 +120,11 @@ decided, why, and what it costs.
 - **Developer decision (after Step 7):** most reports are in English, so English is the primary
   language. Hindi stays an optional extra (AI rewrite + lint + English fallback) for v1. Adding
   reviewed Hindi text to `explanations.json` is a possible later improvement.
+
+## D10. The server recomputes `value` from `rawValue` on analyze (Step 8)
+- **Decided by:** Claude's design, following "AI proposes, code decides" and "one rule, one place".
+- **What:** `/api/analyze` ignores any `value` the client sends (the field is now optional) and
+  derives it from `rawValue` with the same `parseNumericValue` used after extraction.
+- **Why:** the review table lets users edit the result text. Re-implementing number parsing in the
+  browser would create a second copy of the rule that could drift. Now an edited "14.5" is always
+  checked as 14.5, and "Positive" is always unchecked, whatever number travels with it.
