@@ -9,6 +9,7 @@ import type { ExplanationIndex } from "./explanations.js";
 import type { LlmClient, RephraseItem } from "./llm.js";
 import { evaluate } from "./rangeEngine.js";
 import type { LintResult, Language } from "./safetyLint.js";
+import { parseNumericValue } from "./values.js";
 
 // Added by code to every analyze response, never by the model (CLAUDE.md hard rule 7).
 export const DISCLAIMER =
@@ -28,12 +29,14 @@ export interface ExplainDeps {
 /** Flags every row with code, attaches reviewed explanations to low/high rows, optionally in Hindi. */
 export async function analyzeRows(request: AnalyzeRequest, deps: ExplainDeps): Promise<AnalyzeResponse> {
   const results: AnalyzeResult[] = request.rows.map((row) => {
-    const verdict = evaluate(row); // the only place a flag comes from
+    // D10: always derive the number from the text the user reviewed; never trust a sent `value`.
+    const value = parseNumericValue(row.rawValue);
+    const verdict = evaluate({ value, unit: row.unit, printedRange: row.printedRange }); // the only place a flag comes from
     return {
       id: row.id,
       testName: row.testName,
       canonicalKey: deps.explanations.keyFor(row.testName),
-      value: row.value,
+      value,
       unit: row.unit,
       status: verdict.status,
       range: verdict.range,

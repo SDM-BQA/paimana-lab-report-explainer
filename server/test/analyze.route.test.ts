@@ -63,6 +63,24 @@ describe("POST /api/analyze", () => {
     });
   });
 
+  test("the server recomputes value from rawValue and ignores a sent value (D10)", async () => {
+    // The user edited the result to 14.8 in the browser, but a stale value 11.1 was sent.
+    const edited = await post({ language: "en", rows: [{ ...validRow, rawValue: "14.8", value: 11.1 }] });
+    const r1 = (edited.body.results as Array<Record<string, unknown>>)[0]!;
+    assert.equal(r1.value, 14.8);
+    assert.equal(r1.status, "normal");
+
+    // value may be left out entirely.
+    const { value: _omit, ...noValue } = validRow;
+    const res = await post({ language: "en", rows: [noValue] });
+    assert.equal(res.status, 200);
+    assert.equal((res.body.results as Array<Record<string, unknown>>)[0]!.status, "low");
+
+    // A non-numeric result is unchecked even if a number is sent with it.
+    const text = await post({ language: "en", rows: [{ ...validRow, rawValue: "Positive", value: 11.1 }] });
+    assert.equal((text.body.results as Array<Record<string, unknown>>)[0]!.status, "unchecked");
+  });
+
   test("invalid requests → 400 with { error }", async () => {
     const tooMany = Array.from({ length: 61 }, (_, i) => ({ ...validRow, id: `r${i}` }));
     for (const bad of [

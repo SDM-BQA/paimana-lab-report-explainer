@@ -14,7 +14,8 @@ Full spec: `PROJECT_BRIEF.md`. Step log: `docs/STEP_BY_STEP.md`. Reflection log:
 - Server build: `cd server && npm run build` (`tsc` to `dist/`, used by Render)
 - Generate synthetic reports: `cd server && npm run fixtures` (runs `server/scripts/generate-fixtures.ts`)
 - Eval: `cd server && npm run eval`
-- Client dev: `cd client && npm run dev`
+- Client dev: `cd client && npm run dev` (copy `client/.env.example` to `client/.env` first)
+- Client build + type check: `cd client && npm run build`; lint: `cd client && npm run lint`
 
 ## Core principle
 **AI proposes, code decides.** Flags (low / normal / high / unchecked) come only from

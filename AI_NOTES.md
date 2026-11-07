@@ -127,7 +127,7 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   temperature 0. All passed the lint, which proves the lint checks safety, not accuracy.
 - **Developer note:**
 
-### Follow-up: literal rule for one-sided ranges (branch `fix/strict-one-sided-ranges`, PR #__)
+### Follow-up: literal rule for one-sided ranges (branch `fix/strict-one-sided-ranges`, PR #9)
 - **Claude generated:** new tests, the strict/inclusive flags in the parser and engine, the
   fixture 05 answer update, and the D4 amendment.
 - **I decided / changed:** chose the literal rule: `<` and `>` are strict (200 vs `< 200` is
@@ -136,6 +136,18 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   with the code, so the fixtures test flagged fixture 05 until I agreed the new answers.
 - **What went wrong or surprised me, and how it was caught:** regenerating fixtures marked all
   ten truth files as modified; a diff ignoring line endings showed only 05 really changed.
+- **Developer note:**
+
+### Step 8: Client upload and review (branch `feat/client-upload-review`, PR #__)
+- **Claude generated:** the Vite React app (banner, wake-up message, upload, samples, manual
+  entry, editable table) and the D10 server change.
+- **I decided / changed:** nothing changed from the plan in this step.
+- **What worked (instructions or prompts):** scaffolding in a scratch folder and copying only the
+  config; replaying the browser's requests with curl to prove edits are what get checked.
+- **What went wrong or surprised me, and how it was caught:** the first build failed on a
+  TypeScript setting from the template (`erasableSyntaxOnly`), and the linter flagged fast-refresh
+  and effect issues; all fixed. Claude's notes script failed twice in a row (Steps 7 and 8) for
+  the same reason; now its scripts stop on the first error. Claude could not click the UI itself.
 - **Developer note:**
 
 ## 4. Where AI Was Wrong (highlights)
