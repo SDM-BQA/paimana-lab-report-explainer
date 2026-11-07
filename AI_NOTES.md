@@ -38,7 +38,7 @@ Claude appends one entry per step, under 150 words, using this format. Only real
 
 <!-- Entries start below this line -->
 
-### Step 1: Project setup (branch `chore/project-setup`, PR #__)
+### Step 1: Project setup (branch `chore/project-setup`, PR #1)
 - **Claude generated:** the docs kit extracted from the master file, `DECISIONS.md`, the env
   examples, the folder skeleton, and the README stub.
 - **I decided / changed:** renamed the project from LabLens to Paimana; switched from JavaScript
@@ -49,6 +49,19 @@ Claude appends one entry per step, under 150 words, using this format. Only real
 - **What went wrong or surprised me, and how it was caught:** Claude first read my question about
   "founding" as "funding" and said it was guessing. The master file was not in the folder, so
   Claude wrote it from the chat. `gh` is missing and there is no remote yet, so the PR waits.
+- **Developer note:**
+
+### Step 2: Server skeleton (branch `feat/server-skeleton`, PR #__)
+- **Claude generated:** the TypeScript setup, `config.ts`, `app.ts`, `index.ts`, `errors.ts`,
+  the health route, and 13 tests.
+- **I decided / changed:** nothing changed from the plan in this step.
+- **What worked (instructions or prompts):** the "check current docs" rule. npm installed new
+  major versions (TypeScript 7, Express 5, express-rate-limit 8, zod 4), so Claude read the
+  installed README and type files before writing code. It also pinned `@types/node` from 26 to 22.
+- **What went wrong or surprised me, and how it was caught:** the "is required" config message
+  did not appear for a missing variable. zod showed "expected string, received undefined",
+  because the message was attached only to `.min(1)`. The tests passed anyway; the manual start
+  with no env vars caught it. Fixed with zod 4's `error` option, and a test now covers it.
 - **Developer note:**
 
 ## 4. Where AI Was Wrong (highlights)

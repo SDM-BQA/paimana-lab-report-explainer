@@ -13,8 +13,8 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 
 | # | Branch | Status | PR |
 |---|--------|--------|----|
-| 1 | `chore/project-setup` | in review | pending (no remote yet) |
-| 2 | `feat/server-skeleton` | not started | |
+| 1 | `chore/project-setup` | merged | #1 |
+| 2 | `feat/server-skeleton` | in review | |
 | 3 | `feat/range-engine` | not started | |
 | 4 | `feat/explanations-data` | not started | |
 | 5 | `feat/synthetic-fixtures` | not started | |
@@ -107,13 +107,41 @@ app is built in `app.ts` and started in `index.ts` so tests can import it.
 **Checks:** `curl localhost:5000/api/health` returns `{"status":"ok"}`. Starting without env vars
 exits with a readable error. `npm test`, `npm run typecheck`, and `npm run build` pass.
 
-**How Claude did it:** _(fill in)_
+**How Claude did it:**
+- Installed `express`, `helmet`, `cors`, `express-rate-limit`, `zod`, plus dev `typescript`,
+  `tsx`, and type packages. npm resolved TypeScript 7.0, Express 5.3, express-rate-limit 8.7, and
+  zod 4.6. Claude checked the installed packages' own README and `.d.ts` files instead of relying
+  on memory: `limit`, `standardHeaders: "draft-8"`, `legacyHeaders`, and a JSON `message` for
+  express-rate-limit; `z.url()`, `z.prettifyError`, and the `error` option for zod 4.
+- Pinned `@types/node` to 22 (npm first installed 26) to match the Node 22 runtime.
+- Two tsconfigs: `tsconfig.json` (strict, `nodenext`, `noEmit`, covers `src` and `test`) and
+  `tsconfig.build.json` (emits `src` to `dist/`).
+- `config.ts`: `parseConfig(env)` is pure; `loadConfig()` is the only `process.env` read.
+- `app.ts` builds the app; `index.ts` only loads config and listens. Added `errors.ts`
+  (`HttpError`, 404 handler, JSON error handler), a file not listed in the brief's structure.
+- Tests start the real app on port 0 and use Node's built-in `fetch`, so no `supertest`.
+- The dev script loads `server/.env` with Node's `--env-file-if-exists`, so no `dotenv`.
+- `trust proxy` is left for Step 11 as planned.
 
-**Verification:** _(fill in)_
+**Verification:**
+- `npm run typecheck`: clean. `npm test`: 13 tests, 13 pass (health, 404, malformed JSON,
+  helmet headers, CORS allow/deny, 429 after limit, config validation, no secret in errors).
+- `npm run build` produced `dist/`. Started `node dist/index.js` with fake inline env values:
+  `curl /api/health` returned `200 {"status":"ok"}` with `RateLimit` and `nosniff` headers;
+  `/nope` returned `{"error":"Not found"}`.
+- Started with no env vars: exited with code 1 and listed each missing variable by name.
+- `npm run dev` (tsx) ran and showed the same fail-fast message when no `.env` exists.
 
-**Problems and fixes:** _(fill in)_
+**Problems and fixes:**
+- The first fail-fast message for a *missing* variable was zod's generic "Invalid input: expected
+  string, received undefined". Claude had put the friendly message only on `.min(1)`, which never
+  runs when the value is absent. Caught by the manual no-env start, not by the tests. Fixed by
+  passing the message as zod 4's `error` option on the base schema, and added test assertions.
 
-**Commits:** _(fill in)_
+**Commits:**
+- `chore(server): set up strict TypeScript project with tsx and tsc`
+- `feat(server): add Express skeleton with fail-fast config and health route`
+- `docs(notes): record step 2`
 
 ---
 
