@@ -1,10 +1,13 @@
+import { BookOpen, CircleAlert, ClipboardList, LoaderCircle, Lock, ShieldCheck, Sparkles, TriangleAlert } from "lucide-react";
 import { useRef, useState } from "react";
 import { analyzeRows, ApiError, extractReport, type AnalyzeResponse, type Row } from "./api.ts";
 import { Banner } from "./components/Banner.tsx";
+import { Brand } from "./components/Brand.tsx";
 import { Footer } from "./components/Footer.tsx";
 import { ResultsView, type Language } from "./components/ResultsView.tsx";
 import { RowsTable } from "./components/RowsTable.tsx";
 import { ServerStatus } from "./components/ServerStatus.tsx";
+import { StepTitle } from "./components/StepTitle.tsx";
 import { UploadPanel } from "./components/UploadPanel.tsx";
 import { MAX_ROWS, type Sample } from "./constants.ts";
 import { useServerStatus } from "./useServerStatus.ts";
@@ -97,12 +100,31 @@ export default function App() {
     <>
       <Banner />
       <main className="container">
-        <header>
-          <h1>Paimana</h1>
+        <div className="topbar">
+          <Brand />
+          <span className="pill">
+            <Sparkles className="icon" size={14} aria-hidden="true" /> Demo
+          </span>
+        </div>
+        <header className="hero">
+          <h1>
+            Understand your lab report <span className="gradient-text">in plain words</span>
+          </h1>
           <p className="lead">
             Upload a lab report or type values in. Plain code (not AI) checks each value against the range printed on the
             report, and explains flagged results in simple words.
           </p>
+          <ul className="features">
+            <li>
+              <ShieldCheck className="icon" size={18} aria-hidden="true" /> Flags decided by code, not AI
+            </li>
+            <li>
+              <BookOpen className="icon" size={18} aria-hidden="true" /> Reviewed explanations
+            </li>
+            <li>
+              <Lock className="icon" size={18} aria-hidden="true" /> Nothing is stored
+            </li>
+          </ul>
         </header>
 
         <ServerStatus state={server.state} retry={server.retry} />
@@ -117,27 +139,40 @@ export default function App() {
 
         {busy === "reading" && (
           <p className="notice" role="status" aria-live="polite">
-            <span className="spinner" aria-hidden="true" /> Reading the report. This usually takes a few seconds.
+            <LoaderCircle className="icon spin" size={18} aria-hidden="true" />
+            <span>Reading the report. This usually takes a few seconds.</span>
           </p>
         )}
 
         {error && (
           <p className="notice notice-error" role="alert">
-            {error}
+            <CircleAlert className="icon" size={18} aria-hidden="true" />
+            <span>{error}</span>
           </p>
         )}
 
         {rows && (
           <section className="card" aria-labelledby="review-heading">
-            <h2 id="review-heading">2. Review the values</h2>
+            <div className="card-header">
+              <StepTitle id="review-heading" step={2}>
+                Review the values
+              </StepTitle>
+              <span className="source-chip">
+                <ClipboardList className="icon" size={14} aria-hidden="true" />
+                {source}
+              </span>
+            </div>
             <p className="hint">
-              {source}. The AI can misread a digit, so please compare each row with the report and fix anything that is
+              The AI can misread a digit, so please compare each row with the report and fix anything that is
               wrong. Only what is in this table gets checked.
             </p>
             {warnings.length > 0 && (
               <ul className="warnings">
                 {warnings.map((w) => (
-                  <li key={w}>{w}</li>
+                  <li key={w}>
+                    <TriangleAlert className="icon" size={16} aria-hidden="true" />
+                    {w}
+                  </li>
                 ))}
               </ul>
             )}
@@ -153,7 +188,15 @@ export default function App() {
             />
             <div className="actions">
               <button type="button" className="primary" disabled={busy !== null || rows.length === 0} onClick={check}>
-                {busy === "checking" ? "Checking…" : "Check these values"}
+                {busy === "checking" ? (
+                  <>
+                    <LoaderCircle className="icon spin" size={18} aria-hidden="true" /> Checking…
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck className="icon" size={18} aria-hidden="true" /> Check these values
+                  </>
+                )}
               </button>
             </div>
           </section>
