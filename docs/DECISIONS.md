@@ -73,3 +73,24 @@ decided, why, and what it costs.
 - **v2 idea:** a fallback range only when the report has none, with the user choosing sex (and
   age group) in the UI, never stored, results labelled "general range, not your lab's", every
   range sourced and reviewed by the developer.
+
+## D7. The model copies text; code converts it to numbers (Step 6)
+- **Decided by:** Claude's design, following the brief's "AI proposes, code decides" rule.
+- **What:** the extraction schema asks Gemini only for text: `testName`, `rawValue`, `unit`,
+  `printedRange`. It has no numeric `value` field and no patient fields. Code then turns `rawValue`
+  into `value` with `parseNumericValue` (same thousands rule as the range parser). Anything that
+  is not a plain number (`Positive`, `< 0.5`, `13,5`) becomes `null`, and the row is unchecked.
+- **Why:** a model that "helpfully" converts or rounds a number would silently change a flag.
+  Copying text is easier to verify, and the user still reviews every row before analysis.
+
+## D8. Model: gemini-3.5-flash-lite (Step 6)
+- **Decided by:** developer, from the options Claude listed.
+- **How it was chosen:** the current Gemini pricing page (fetched in Step 6) lists it as free tier,
+  stable (not preview, not deprecated), with image input. Gemini 2.5 Flash/Pro were avoided
+  because the page marks them deprecated from December 1, 2026. PDF input was not stated on the
+  page, so it was tested for real before any code was built.
+- **Result so far:** fixtures 01, 04, 06, and 10 extracted with every field correct; about 2 s
+  and 800 tokens per report. Switching models is a one-line `GEMINI_MODEL` change.
+- **Caveat:** every free-tier model is marked "Used to improve our products: Yes", so the UI must
+  warn users not to upload real reports. Requests set `store: false`, but that does not change
+  the free-tier terms.

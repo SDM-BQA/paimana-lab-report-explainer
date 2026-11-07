@@ -90,7 +90,7 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   Checking the sources before building also stopped a feature: none gave sex-specific ranges.
 - **Developer note:**
 
-### Step 5: Synthetic fixtures (branch `feat/synthetic-fixtures`, PR #__)
+### Step 5: Synthetic fixtures (branch `feat/synthetic-fixtures`, PR #6)
 - **Claude generated:** one typed spec for 10 fake reports, a pdfkit generator, the PDFs and
   truth files, and a test that runs the engine against every hand-written expected status.
 - **I decided / changed:** nothing changed from the plan in this step.
@@ -99,6 +99,20 @@ Claude appends one entry per step, under 150 words, using this format. Only real
 - **What went wrong or surprised me, and how it was caught:** no issues found. One process
   surprise: PR #4 was merged before two Step 4 commits were pushed, so they needed follow-up PR #5.
   It was caught by comparing `origin/main` with the branch before starting Step 5.
+- **Developer note:**
+
+### Step 6: LLM extraction (branch `feat/llm-extraction`, PR #__)
+- **Claude generated:** the Gemini client, prompts, extraction validation, `/api/extract`, and 31
+  tests with a fake LLM.
+- **I decided / changed:** chose `gemini-3.5-flash-lite` (D8) from options Claude took from the
+  current pricing page.
+- **What worked (instructions or prompts):** testing one real call before building. The
+  brief's strict prompt worked as written: 65/65 fields correct on three fixtures, and the
+  injected "ignore your rules" line in fixture 10 had no effect on the output.
+- **What went wrong or surprised me, and how it was caught:** one test was wrong, not the code: a
+  regex found "age" inside "printedRange". Temp files appeared during the manual disk check;
+  rather than assume, Claude re-ran the server with its own empty temp folder and proved it wrote
+  nothing.
 - **Developer note:**
 
 ## 4. Where AI Was Wrong (highlights)
