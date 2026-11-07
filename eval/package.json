@@ -1,0 +1,6 @@
+{
+  "name": "paimana-eval",
+  "private": true,
+  "type": "module",
+  "description": "Marks eval/ as ES modules. Run the eval with: cd server && npm run eval"
+}
