@@ -217,6 +217,18 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   in screenshots and fixed.
 - **Developer note:**
 
+### Step 13c: guided tour (branch `feat/ui-refresh`, PR #__)
+- **Claude generated:** a six-step first-visit tour with spotlight, keyboard support, phone
+  bottom sheet, and a replay button, with no new dependency.
+- **I decided / changed:** asked for a guided tour; chose to add it to `feat/ui-refresh` instead
+  of a new branch.
+- **What worked (instructions or prompts):** testing by script (scroll positions, focus, stored
+  flag) rather than trusting screenshots alone.
+- **What went wrong or surprised me, and how it was caught:** smooth scrolling stopped part-way on
+  phone emulation and hid the target, found by logging scroll positions; a "fix" that delayed the
+  scroll did not work, so phones now scroll instantly.
+- **Developer note:**
+
 ## 4. Where AI Was Wrong (highlights)
 
 Curate the best 3 to 5 from the build log: the mistake, how I noticed, the fix.

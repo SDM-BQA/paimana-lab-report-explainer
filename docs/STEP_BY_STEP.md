@@ -804,3 +804,43 @@ never shown by colour alone. No real data in any preview.
 - `chore(client): add display and mono font packages`
 - `feat(client): give the interface a lab-report identity`
 - `docs(notes): record step 13 design pass`
+
+### Step 13c: guided tour (same branch)
+
+**Ask Claude (as given):** "add a guided tour system at the visit". Claude asked where it should
+go; the developer chose to add it to `feat/ui-refresh` because the tour targets the new layout.
+
+**How Claude did it:**
+- A custom tour with no new dependency: `GuidedTour.tsx` (spotlight, dialog, keyboard) and
+  `tourSteps.ts` (six steps: welcome, demo banner, "code decides", how to read a result, samples,
+  own input). Targets are `data-tour` attributes, so restyling cannot break them.
+- It opens by itself on a first visit, and "Take the tour" in the top bar replays it. The only
+  thing stored is a `paimana.tourSeen` flag in `localStorage`, never report data. Storage access
+  is wrapped in `try`/`catch`; if storage is blocked, the tour shows again.
+- Accessibility: `role="dialog"` with `aria-modal`, the page behind is `inert`, focus moves to the
+  main button and is trapped in the dialog, Escape closes, and the arrow keys move between steps.
+  Reduced motion turns off the animations.
+- The dialog sits below, above or beside the target (whichever fits); on phones it is a bottom sheet.
+
+**Verification:**
+- `npm run build` and `npm run lint` pass.
+- A Node script in the scratchpad drove headless Edge over the DevTools protocol at 1280 px
+  (light and dark) and 375 px (dark). It checked that the tour opens on a first visit, every step
+  title, keyboard and button navigation, `inert` on and off, the stored flag, that it stays closed
+  after a reload, the replay button, Escape, and no horizontal overflow. Screenshots of each step
+  were checked by eye. Not checked: focus returning to "Take the tour" after closing, because a
+  script click does not focus the button.
+
+**Problems and fixes:**
+- Type errors from `noUncheckedIndexedAccess` (`step`, focus-trap ends); fixed with a non-empty
+  tuple type and guards. A lint warning about `setState` in an effect was removed by relying on
+  the `ResizeObserver`'s first report.
+- At 375 px with mobile emulation, smooth scrolling sometimes stopped part-way, leaving the step
+  5 target under the bottom sheet (caught by logging scroll positions). Starting the scroll a
+  frame later did not help. It worked with mobile emulation off, so it may be an emulation quirk,
+  but phones now scroll instantly to be safe. Separately, the first test run reported false
+  failures because the script sent key events wrongly; the script was fixed, not the app.
+
+**Commits:**
+- `feat(client): add a first-visit guided tour`
+- `docs(notes): record step 13c`
