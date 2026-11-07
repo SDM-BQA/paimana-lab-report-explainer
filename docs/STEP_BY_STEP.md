@@ -14,8 +14,8 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 | # | Branch | Status | PR |
 |---|--------|--------|----|
 | 1 | `chore/project-setup` | merged | #1 |
-| 2 | `feat/server-skeleton` | in review | |
-| 3 | `feat/range-engine` | not started | |
+| 2 | `feat/server-skeleton` | merged | #2 |
+| 3 | `feat/range-engine` | in review | |
 | 4 | `feat/explanations-data` | not started | |
 | 5 | `feat/synthetic-fixtures` | not started | |
 | 6 | `feat/llm-extraction` | not started | |
@@ -164,13 +164,35 @@ non-numeric all return `unchecked`.
 **Checks:** `npm test` and `npm run typecheck` pass; every status and every edge case in
 Section 12 of the brief has a test.
 
-**How Claude did it:** _(fill in)_
+**How Claude did it:**
+- Tests first: wrote `test/rangeParser.test.ts` and `test/rangeEngine.test.ts`, ran them, and
+  confirmed they failed (`ERR_MODULE_NOT_FOUND`, because the services did not exist yet). They
+  were committed on their own so the history shows tests before code.
+- `rangeParser.ts`: three anchored regexes (two-sided, upper-only, lower-only) on normalized text
+  (dash variants → hyphen, thousands commas removed). Text after the numbers must look like a
+  single unit token, otherwise the range is unparseable. Returns a discriminated union
+  (`ok: true` with limits, or `ok: false` with `kind` and `reason`).
+- `rangeEngine.ts`: pure `evaluate({ value, unit, printedRange })` → `{ status, range, reason }`.
+  Checks in order: value, range present, range parseable, unit contradiction, then compares
+  with inclusive limits. Reason strings are exported as `REASONS` so later steps and fixtures
+  can match them exactly.
+- Recorded the rules in `docs/DECISIONS.md` D4, flagging one open point: whether a value equal to
+  a one-sided limit (`200` vs `< 200`) should be normal (current) or high.
+- Each Section 12 fixture case (01 to 10) has at least one matching engine test.
 
-**Verification:** _(fill in)_
+**Verification:**
+- `npm run typecheck`: clean. `npm test`: 54 tests, 54 pass (13 from Step 2, 41 new).
+- Mutation check: temporarily made limits exclusive → 2 tests failed; temporarily removed the
+  unit-mismatch check → 1 test failed. The original code was restored and passed 54/54.
 
-**Problems and fixes:** _(fill in)_
+**Problems and fixes:**
+- No issues found. The code passed every test on its first run, which is why the mutation check
+  was added: to confirm the tests can actually fail.
 
-**Commits:** _(fill in)_
+**Commits:**
+- `test(engine): specify range parser and engine behaviour before code`
+- `feat(engine): add deterministic range parser and flag engine`
+- `docs(notes): record step 3`
 
 ---
 
