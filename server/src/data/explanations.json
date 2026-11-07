@@ -1,0 +1,92 @@
+{
+  "hemoglobin": {
+    "displayName": "Hemoglobin",
+    "aliases": ["hb", "hgb", "haemoglobin", "hemoglobin"],
+    "measures": "This test measures the level of hemoglobin in your blood.",
+    "low": "A low hemoglobin level can be related to many things, including low iron or other nutrients, blood loss (for example from an injury or heavy periods), anemia, and some long-term illnesses.",
+    "high": "A high hemoglobin level can be related to things such as lung or heart conditions, sleep apnea, or a bone marrow condition that makes too many red blood cells.",
+    "source": "MedlinePlus, Hemoglobin Test: https://medlineplus.gov/lab-tests/hemoglobin-test/",
+    "reviewed": false
+  },
+  "wbc": {
+    "displayName": "White blood cell count (WBC)",
+    "aliases": ["wbc", "wbc count", "white blood cell count", "white blood count", "white cell count", "total wbc count", "leukocyte count", "total leukocyte count", "total leucocyte count", "tlc"],
+    "measures": "This test measures the number of white blood cells in your blood.",
+    "low": "A low white blood cell count can be related to problems with the bone marrow, autoimmune conditions, some infections, and other conditions.",
+    "high": "A high white blood cell count is often related to an infection or inflammation. Allergies, stress, smoking, pregnancy, tissue damage from a burn or surgery, and some blood conditions can also raise it.",
+    "source": "MedlinePlus, White Blood Count (WBC): https://medlineplus.gov/lab-tests/white-blood-count-wbc/",
+    "reviewed": false
+  },
+  "platelets": {
+    "displayName": "Platelet count",
+    "aliases": ["platelets", "platelet count", "plt", "thrombocyte count"],
+    "measures": "This test measures the number of platelets in your blood.",
+    "low": "A low platelet count can be related to viral infections, autoimmune conditions, liver scarring (cirrhosis), a nutrient deficiency, problems with the bone marrow, and some blood conditions. A mild drop can also happen during pregnancy.",
+    "high": "A high platelet count can be related to infection, inflammation (for example inflammatory bowel disease or rheumatoid arthritis), anemia, severe blood loss, and some other conditions.",
+    "source": "MedlinePlus, Platelet Tests: https://medlineplus.gov/lab-tests/platelet-tests/",
+    "reviewed": false
+  },
+  "glucose": {
+    "displayName": "Blood glucose",
+    "aliases": ["glucose", "blood glucose", "blood sugar", "plasma glucose", "fasting glucose", "glucose fasting", "fasting blood sugar", "fasting blood glucose", "fasting plasma glucose", "fbs", "fpg", "random blood sugar", "rbs"],
+    "measures": "This test measures the level of glucose (sugar) in your blood.",
+    "low": "Low blood glucose is not common in people without diabetes. When it happens, it can be related to things such as liver or kidney problems, an underactive thyroid, not getting enough food, or heavy alcohol use.",
+    "high": "A high blood glucose level can be a sign of diabetes or a higher risk of it. It can also be related to an overactive thyroid, a pancreas problem, or stress from surgery, serious illness, or injury.",
+    "source": "MedlinePlus, Blood Glucose Test: https://medlineplus.gov/lab-tests/blood-glucose-test/",
+    "reviewed": false
+  },
+  "hba1c": {
+    "displayName": "HbA1c",
+    "aliases": ["hba1c", "a1c", "hemoglobin a1c", "haemoglobin a1c", "glycated hemoglobin", "glycated haemoglobin", "glycosylated hemoglobin", "glycosylated haemoglobin"],
+    "measures": "This test shows your average blood glucose (sugar) level over the past two to three months.",
+    "low": null,
+    "high": "A high result means blood glucose has been higher than usual over the past few months. This can be a sign of diabetes or prediabetes, and doctors often use more than one test to confirm it.",
+    "source": "MedlinePlus, Hemoglobin A1C (HbA1c) Test: https://medlineplus.gov/lab-tests/hemoglobin-a1c-hba1c-test/",
+    "reviewed": false
+  },
+  "total_cholesterol": {
+    "displayName": "Total cholesterol",
+    "aliases": ["total cholesterol", "cholesterol", "cholesterol total", "serum cholesterol", "s cholesterol"],
+    "measures": "This test measures the total amount of cholesterol in your blood, including HDL and LDL cholesterol.",
+    "low": null,
+    "high": "High cholesterol can raise the risk of heart disease over time.",
+    "source": "MedlinePlus, Cholesterol Levels: https://medlineplus.gov/lab-tests/cholesterol-levels/",
+    "reviewed": false
+  },
+  "hdl": {
+    "displayName": "HDL cholesterol",
+    "aliases": ["hdl", "hdl cholesterol", "hdl c", "cholesterol hdl", "high density lipoprotein", "high density lipoprotein cholesterol"],
+    "measures": "HDL is often called \"good\" cholesterol because it helps clear \"bad\" LDL cholesterol. This test measures how much HDL is in your blood.",
+    "low": "A low HDL level means less of this helpful cholesterol. Higher HDL levels may help lower the risk of heart attack and stroke.",
+    "high": null,
+    "source": "MedlinePlus, Cholesterol Levels: https://medlineplus.gov/lab-tests/cholesterol-levels/",
+    "reviewed": false
+  },
+  "triglycerides": {
+    "displayName": "Triglycerides",
+    "aliases": ["triglycerides", "triglyceride", "tg", "serum triglycerides"],
+    "measures": "This test measures the amount of triglycerides, a type of fat, in your blood.",
+    "low": "Low triglyceride levels are very uncommon.",
+    "high": "High triglycerides may mean a higher risk of heart disease, stroke, and other conditions that affect the arteries.",
+    "source": "MedlinePlus, Triglycerides Test: https://medlineplus.gov/lab-tests/triglycerides-test/",
+    "reviewed": false
+  },
+  "creatinine": {
+    "displayName": "Creatinine",
+    "aliases": ["creatinine", "serum creatinine", "s creatinine", "creatinine serum", "creat"],
+    "measures": "This test measures the level of creatinine in your blood.",
+    "low": "A low creatinine level can be related to poor nutrition, conditions that make the muscles smaller, or serious liver disease.",
+    "high": "A high creatinine level can be related to kidney problems, but it does not always mean there is a kidney problem. Conditions that affect the kidneys, such as heart failure or diabetes, can also raise it.",
+    "source": "MedlinePlus, Creatinine Test: https://medlineplus.gov/lab-tests/creatinine-test/",
+    "reviewed": false
+  },
+  "tsh": {
+    "displayName": "TSH (thyroid-stimulating hormone)",
+    "aliases": ["tsh", "thyroid stimulating hormone", "tsh ultrasensitive", "ultrasensitive tsh", "serum tsh", "s tsh"],
+    "measures": "This test measures thyroid-stimulating hormone (TSH), which tells the thyroid gland how hard to work.",
+    "low": "A low TSH level often happens when the body has more thyroid hormone than usual, which can be related to an overactive thyroid.",
+    "high": "A high TSH level often happens when the thyroid is not making enough thyroid hormone, which can be related to an underactive thyroid.",
+    "source": "MedlinePlus, TSH (Thyroid-stimulating hormone) Test: https://medlineplus.gov/lab-tests/tsh-thyroid-stimulating-hormone-test/",
+    "reviewed": false
+  }
+}

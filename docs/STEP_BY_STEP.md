@@ -15,8 +15,8 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 |---|--------|--------|----|
 | 1 | `chore/project-setup` | merged | #1 |
 | 2 | `feat/server-skeleton` | merged | #2 |
-| 3 | `feat/range-engine` | in review | |
-| 4 | `feat/explanations-data` | not started | |
+| 3 | `feat/range-engine` | merged | #3 |
+| 4 | `feat/explanations-data` | in review | |
 | 5 | `feat/synthetic-fixtures` | not started | |
 | 6 | `feat/llm-extraction` | not started | |
 | 7 | `feat/analyze-endpoint` | not started | |
@@ -216,13 +216,51 @@ wording if needed, then set `"reviewed": true` yourself. Entries you have not ch
 **Checks:** Tests and typecheck pass. App ignores `reviewed: false` entries. You have reviewed at
 least the entries you plan to use in the demo.
 
-**How Claude did it:** _(fill in)_
+**How Claude did it:**
+- Chose 10 common tests: hemoglobin, WBC, platelets, glucose, HbA1c, total cholesterol, HDL,
+  triglycerides, creatinine, TSH.
+- Fetched each MedlinePlus page in this session and drafted the text only from what the page
+  said: what the test measures, then what low or high results can generally relate to. Where a
+  page does not cover a direction (low HbA1c, low total cholesterol, high HDL), that field is
+  `null` rather than written from memory. All entries are `"reviewed": false`.
+- `services/explanations.ts`: validates the JSON with a strict zod schema at startup, normalizes
+  names (case and punctuation), and tries the name as printed, without brackets, and inside
+  brackets. Exact match only, no fuzzy matching. Unreviewed entries are never returned. Alias
+  clashes throw at startup.
+- The JSON is imported with `with { type: "json" }`, so `tsc` copies it into `dist/`.
 
-**Verification:** _(fill in)_
+**Verification:**
+- `npm run typecheck`: clean. `npm test`: 73 tests, 73 pass (19 new).
+- Built with `npm run build`; `dist/data/explanations.json` exists. Loading the compiled module
+  under plain Node reported 10 entries, 0 reviewed, and `find("Hb")` → `null`.
+- Tests on the real file: valid shape, 8 to 10 entries, https source on each, no digits in the
+  text, no medicine, dose, treatment, or "you have" wording.
 
-**Problems and fixes:** _(fill in)_
+**Problems and fixes:**
+- Claude's first guess for an HDL source URL (`/lab-tests/hdl-cholesterol-test/`) returned
+  HTTP 404. Caught by fetching it. HDL now cites the Cholesterol Levels page, which covers HDL.
+- HbA1c's display name contains digits, so the text-has-no-numbers rule meant its explanation
+  could not repeat "HbA1c". The text says "A high result" instead.
 
-**Commits:** _(fill in)_
+**Developer review checklist (Step 4 task):**
+
+| Key | Source page | Checked | `reviewed` set |
+|-----|-------------|---------|----------------|
+| hemoglobin | Hemoglobin Test | | |
+| wbc | White Blood Count (WBC) | | |
+| platelets | Platelet Tests | | |
+| glucose | Blood Glucose Test | | |
+| hba1c | Hemoglobin A1C (HbA1c) Test | | |
+| total_cholesterol | Cholesterol Levels | | |
+| hdl | Cholesterol Levels | | |
+| triglycerides | Triglycerides Test | | |
+| creatinine | Creatinine Test | | |
+| tsh | TSH Test | | |
+
+**Commits:**
+- `feat(data): draft 10 explanation entries, all unreviewed`
+- `feat(explanations): add loader with alias lookup and review gate`
+- `docs(notes): record step 4`
 
 ---
 
