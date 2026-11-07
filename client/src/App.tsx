@@ -1,9 +1,10 @@
-import { BookOpen, CircleAlert, ClipboardList, LoaderCircle, Lock, ShieldCheck, Sparkles, TriangleAlert } from "lucide-react";
+import { BookOpen, CircleAlert, ClipboardList, LoaderCircle, Lock, ShieldCheck, TriangleAlert } from "lucide-react";
 import { useRef, useState } from "react";
 import { analyzeRows, ApiError, extractReport, type AnalyzeResponse, type Row } from "./api.ts";
 import { Banner } from "./components/Banner.tsx";
 import { Brand } from "./components/Brand.tsx";
 import { Footer } from "./components/Footer.tsx";
+import { HeroSpecimen } from "./components/HeroSpecimen.tsx";
 import { ResultsView, type Language } from "./components/ResultsView.tsx";
 import { RowsTable } from "./components/RowsTable.tsx";
 import { ServerStatus } from "./components/ServerStatus.tsx";
@@ -102,29 +103,31 @@ export default function App() {
       <main className="container">
         <div className="topbar">
           <Brand />
-          <span className="pill">
-            <Sparkles className="icon" size={14} aria-hidden="true" /> Demo
-          </span>
+          <span className="pill">Demo</span>
         </div>
         <header className="hero">
-          <h1>
-            Understand your lab report <span className="gradient-text">in plain words</span>
-          </h1>
-          <p className="lead">
-            Upload a lab report or type values in. Plain code (not AI) checks each value against the range printed on the
-            report, and explains flagged results in simple words.
-          </p>
-          <ul className="features">
-            <li>
-              <ShieldCheck className="icon" size={18} aria-hidden="true" /> Flags decided by code, not AI
-            </li>
-            <li>
-              <BookOpen className="icon" size={18} aria-hidden="true" /> Reviewed explanations
-            </li>
-            <li>
-              <Lock className="icon" size={18} aria-hidden="true" /> Nothing is stored
-            </li>
-          </ul>
+          <div className="hero-copy">
+            <p className="eyebrow">Lab report explainer</p>
+            <h1>
+              Understand your lab report <em>in plain words.</em>
+            </h1>
+            <p className="lead">
+              Upload a lab report or type values in. Plain code (not AI) checks each value against the range printed on
+              the report, and explains flagged results in simple words.
+            </p>
+            <ul className="features">
+              <li>
+                <ShieldCheck className="icon" size={18} aria-hidden="true" /> Flags decided by code, not AI
+              </li>
+              <li>
+                <BookOpen className="icon" size={18} aria-hidden="true" /> Reviewed explanations
+              </li>
+              <li>
+                <Lock className="icon" size={18} aria-hidden="true" /> Nothing is stored
+              </li>
+            </ul>
+          </div>
+          <HeroSpecimen />
         </header>
 
         <ServerStatus state={server.state} retry={server.retry} />

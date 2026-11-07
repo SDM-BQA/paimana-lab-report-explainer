@@ -1,4 +1,4 @@
-import { FileImage, FileText, FlaskConical, Keyboard, PencilLine, Upload } from "lucide-react";
+import { ArrowRight, FileImage, FileText, PencilLine, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { ACCEPTED_TYPES, MAX_UPLOAD_BYTES, SAMPLES, type Sample } from "../constants.ts";
 import { StepTitle } from "./StepTitle.tsx";
@@ -43,32 +43,30 @@ export function UploadPanel({ busy, onFile, onSample, onManual, onInvalid }: Pro
         </StepTitle>
       </div>
 
-      <div className="upload-options">
-        <div className="option">
-          <span className="option-icon" aria-hidden="true">
-            <FlaskConical size={20} />
-          </span>
+      <div className="upload-grid">
+        {/* Samples come first and get the most room: this is a demo, and they are the safe path. */}
+        <div className="samples">
           <h3>Try a sample report</h3>
-          <p className="hint">Synthetic reports made for this demo.</p>
-          <div className="sample-list">
+          <p className="hint">Synthetic reports made for this demo. Pick one to see the whole flow.</p>
+          <ul className="sample-list">
             {SAMPLES.map((s) => {
-              const Icon = s.type === "application/pdf" ? FileText : FileImage;
+              const isPdf = s.type === "application/pdf";
+              const Icon = isPdf ? FileText : FileImage;
               return (
-                <button key={s.file} type="button" className="sample-button" disabled={busy} onClick={() => onSample(s)}>
-                  <Icon className="icon" size={16} aria-hidden="true" />
-                  {s.label}
-                </button>
+                <li key={s.file}>
+                  <button type="button" className="sample-button" disabled={busy} onClick={() => onSample(s)}>
+                    <Icon className="icon" size={18} aria-hidden="true" />
+                    <span className="sample-label">{s.label}</span>
+                    <span className="file-tag">{isPdf ? "PDF" : "PNG"}</span>
+                    <ArrowRight className="icon sample-arrow" size={16} aria-hidden="true" />
+                  </button>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
 
-        <div className="option">
-          <span className="option-icon" aria-hidden="true">
-            <Upload size={20} />
-          </span>
-          <h3>Or upload a file</h3>
-          <p className="hint">PDF, PNG, or JPG, up to 5 MB. Please do not upload a real report.</p>
+        <div className="own-input">
           <input
             ref={input}
             id="report-file"
@@ -90,22 +88,24 @@ export function UploadPanel({ busy, onFile, onSample, onManual, onInvalid }: Pro
             onDragLeave={() => setDragging(false)}
             onDrop={handleDrop}
           >
-            <Upload className="icon" size={22} aria-hidden="true" />
-            <span>
+            <Upload className="icon" size={24} aria-hidden="true" />
+            <span className="dropzone-title">
               <strong>Choose a file</strong> or drag it here
             </span>
+            <span className="dropzone-meta">PDF, PNG or JPG · up to 5 MB</span>
           </button>
-        </div>
+          <p className="hint upload-warning">Please do not upload a real report.</p>
 
-        <div className="option">
-          <span className="option-icon" aria-hidden="true">
-            <Keyboard size={20} />
-          </span>
-          <h3>Or type values in</h3>
-          <p className="hint">No AI is used for manual entry.</p>
-          <button type="button" disabled={busy} onClick={onManual}>
-            <PencilLine className="icon" size={16} aria-hidden="true" />
-            Enter values by hand
+          <div className="divider" role="presentation">
+            <span>or</span>
+          </div>
+
+          <button type="button" className="manual-button" disabled={busy} onClick={onManual}>
+            <PencilLine className="icon" size={18} aria-hidden="true" />
+            <span>
+              <strong>Type values in by hand</strong>
+              <span className="manual-meta">No AI is used for manual entry</span>
+            </span>
           </button>
         </div>
       </div>

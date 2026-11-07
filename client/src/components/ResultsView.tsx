@@ -1,6 +1,7 @@
 import { BookOpen, Info, Languages, LoaderCircle, ShieldCheck, TriangleAlert } from "lucide-react";
 import type { AnalyzeResponse, AnalyzeResult, Row, Status } from "../api.ts";
 import { STATUS_LOOK } from "../statusLook.ts";
+import { RangeMeter } from "./RangeMeter.tsx";
 import { StatusBadge } from "./StatusBadge.tsx";
 import { StepTitle } from "./StepTitle.tsx";
 
@@ -86,24 +87,32 @@ export function ResultsView({ analysis, rows, language, busy, onLanguage }: Prop
 
 function ResultCard({ result, printedRange }: { result: AnalyzeResult; printedRange: string | null }) {
   const flagged = result.status === "high" || result.status === "low";
-  const shownValue = result.value === null ? "—" : `${result.value}${result.unit ? ` ${result.unit}` : ""}`;
+  const { value, range } = result;
 
   return (
     <li className={`result result-${result.status}`}>
-      <div className="result-top">
-        <h3>{result.testName}</h3>
-        <StatusBadge status={result.status} />
+      <div className="result-main">
+        <div className="result-name">
+          <h3>{result.testName}</h3>
+          <StatusBadge status={result.status} />
+        </div>
+        <dl className="result-facts">
+          <div>
+            <dt>Your result</dt>
+            <dd className="reading">
+              {value === null ? "—" : value}
+              {value !== null && result.unit && <span className="unit"> {result.unit}</span>}
+            </dd>
+          </div>
+          <div>
+            <dt>Range on report</dt>
+            <dd className="printed-range">{printedRange ?? "—"}</dd>
+          </div>
+        </dl>
+        {value !== null && range && result.status !== "unchecked" && (
+          <RangeMeter value={value} low={range.low} high={range.high} status={result.status} />
+        )}
       </div>
-      <dl className="result-facts">
-        <div>
-          <dt>Your result</dt>
-          <dd>{shownValue}</dd>
-        </div>
-        <div>
-          <dt>Range on report</dt>
-          <dd>{printedRange ?? "—"}</dd>
-        </div>
-      </dl>
 
       {result.status === "unchecked" && (
         <p className="reason">

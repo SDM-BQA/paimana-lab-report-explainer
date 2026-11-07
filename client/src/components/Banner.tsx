@@ -2,7 +2,7 @@ import { TriangleAlert } from "lucide-react";
 
 export function Banner() {
   return (
-    <div className="banner" role="alert">
+    <div className="banner" role="note">
       <TriangleAlert className="icon" size={18} aria-hidden="true" />
       <p>
         <strong>Demo only. Use the sample reports, not real medical data.</strong> Files are read by a free AI service that
