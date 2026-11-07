@@ -844,3 +844,41 @@ go; the developer chose to add it to `feat/ui-refresh` because the tour targets 
 **Commits:**
 - `feat(client): add a first-visit guided tour`
 - `docs(notes): record step 13c`
+
+### Step 13d: video guide (same branch)
+
+**Ask Claude (as given):** "can we use a gif video also as guide can u make it"
+
+**How Claude did it:**
+- Recorded the real app locally (server + client) with headless Edge over the DevTools protocol,
+  using the synthetic "Mixed results" sample: read report → review table → check → results →
+  switch to Hindi. A drawn cursor was added in the page only during recording. The waits for
+  Gemini were cut out of the video. The recording made two real Gemini calls (extract and Hindi
+  rephrase) on synthetic data.
+- Encoded with a throwaway `ffmpeg-static` binary in the scratchpad (not a project dependency):
+  `client/public/guide/paimana-guide.mp4` (about 0.6 MB, 960 px, 29 s) with a poster image, and
+  `docs/media/paimana-guide.gif` (about 2.2 MB, 640 px) for the README.
+- Added a "See it in action" step (step 2 of 7) to the tour, with a wider dialog. The video is
+  muted, loops, has controls so it can be paused (WCAG 2.2.2), does not autoplay with reduced
+  motion, and only loads when that step opens. The README shows the GIF at the top.
+- The Hindi text in the video is real app output (AI-translated from reviewed text and
+  safety-checked), frozen at recording time.
+
+**Verification:**
+- `npm run build` and `npm run lint` pass.
+- Still frames from the video were checked by eye at 4, 10, 16 and 27 seconds, plus one GIF frame.
+- The tour check script, updated for 7 steps, confirmed the video plays in the tour at 1280 px
+  and 375 px. The other tour checks still pass.
+
+**Problems and fixes:**
+- The first recording run hung; logging each step showed the scroll helper waiting on
+  `requestAnimationFrame`, which headless Edge stopped firing. It was switched to a timer loop.
+- The first video was 10.7 s instead of about 30 s: screencast frame timestamps do not advance
+  while the screen is still, so pauses collapsed. Frames are now timed by arrival.
+- The first GIF was 3.8 MB; re-encoded at 640 px, 6 fps, 64 colours to 2.2 MB.
+- The recording script lives only in the scratchpad (machine-specific paths), so re-recording
+  after UI changes needs it rewritten or added to the repo.
+
+**Commits:**
+- `feat(client): add a video walkthrough to the tour and README`
+- `docs(notes): record step 13d`

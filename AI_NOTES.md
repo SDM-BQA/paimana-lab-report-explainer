@@ -229,6 +229,17 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   scroll did not work, so phones now scroll instantly.
 - **Developer note:**
 
+### Step 13d: video guide (branch `feat/ui-refresh`, PR #__)
+- **Claude generated:** a 29-second recording of the real app on a synthetic sample, as an MP4
+  in the tour's new "See it in action" step and a GIF in the README.
+- **I decided / changed:** asked for a GIF/video guide.
+- **What worked (instructions or prompts):** recording the real flow (not a mock-up), and cutting
+  the AI waits so the video stays short.
+- **What went wrong or surprised me, and how it was caught:** the recorder hung (headless Edge
+  stopped firing animation frames) and the first video was a third of the right length (frame
+  timestamps freeze when the screen is still). Both were found by logging and fixed in the script.
+- **Developer note:**
+
 ## 4. Where AI Was Wrong (highlights)
 
 Curate the best 3 to 5 from the build log: the mistake, how I noticed, the fix.
