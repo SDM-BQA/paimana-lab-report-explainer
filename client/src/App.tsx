@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { analyzeRows, ApiError, extractReport, type AnalyzeResponse, type Row } from "./api.ts";
 import { Banner } from "./components/Banner.tsx";
+import { Footer } from "./components/Footer.tsx";
+import { ResultsView, type Language } from "./components/ResultsView.tsx";
 import { RowsTable } from "./components/RowsTable.tsx";
 import { ServerStatus } from "./components/ServerStatus.tsx";
 import { UploadPanel } from "./components/UploadPanel.tsx";
@@ -20,6 +22,9 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<Busy>(null);
   const [analysis, setAnalysis] = useState<AnalyzeResponse | null>(null);
+  // The exact rows that produced `analysis`, so a language switch re-checks the same data.
+  const [checkedRows, setCheckedRows] = useState<Row[]>([]);
+  const [language, setLanguage] = useState<Language>("en");
   const nextId = useRef(1);
   const newId = () => `m${nextId.current++}`;
 
@@ -63,20 +68,29 @@ export default function App() {
     );
   }
 
-  async function check() {
-    if (!rows) return;
-    const filled = rows.filter((r) => r.testName.trim() !== "" || r.rawValue !== null);
-    if (filled.length === 0) return setError("Add at least one test name and result first.");
-    if (filled.some((r) => r.testName.trim() === "")) return setError("Every row with a result needs a test name.");
+  async function runAnalysis(toCheck: Row[], lang: Language) {
     setBusy("checking");
     setError(null);
     try {
-      setAnalysis(await analyzeRows(filled.map((r) => ({ ...r, testName: r.testName.trim() })), "en"));
+      setAnalysis(await analyzeRows(toCheck, lang));
+      setCheckedRows(toCheck);
+      setLanguage(lang);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Something went wrong while checking the values.");
     } finally {
       setBusy(null);
     }
+  }
+
+  function check() {
+    if (!rows) return;
+    const filled = rows.filter((r) => r.testName.trim() !== "" || r.rawValue !== null);
+    if (filled.length === 0) return setError("Add at least one test name and result first.");
+    if (filled.some((r) => r.testName.trim() === "")) return setError("Every row with a result needs a test name.");
+    void runAnalysis(
+      filled.map((r) => ({ ...r, testName: r.testName.trim() })),
+      language,
+    );
   }
 
   return (
@@ -146,20 +160,16 @@ export default function App() {
         )}
 
         {analysis && (
-          // Minimal output for Step 8, so edits can be verified end to end. The full results view is Step 9.
-          <section className="card" aria-labelledby="results-heading">
-            <h2 id="results-heading">3. Results (preview)</h2>
-            <ul>
-              {analysis.results.map((r) => (
-                <li key={r.id}>
-                  <strong>{r.testName}</strong>: {r.status} ({r.reason})
-                </li>
-              ))}
-            </ul>
-            <p className="hint">{analysis.disclaimer}</p>
-          </section>
+          <ResultsView
+            analysis={analysis}
+            rows={checkedRows}
+            language={language}
+            busy={busy !== null}
+            onLanguage={(lang) => lang !== language && void runAnalysis(checkedRows, lang)}
+          />
         )}
       </main>
+      <Footer />
     </>
   );
 }
