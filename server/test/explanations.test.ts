@@ -13,27 +13,27 @@ const fake: ExplanationFile = {
   hemoglobin: {
     displayName: "Hemoglobin",
     aliases: ["hb", "hgb", "haemoglobin"],
+    category: "Blood count",
     measures: "Test text.",
-    low: "Low test text.",
-    high: "High test text.",
+    interpretation: { low: "Low test text.", high: "High test text." },
     source: "Example: https://example.org/hb",
     reviewed: true,
   },
   hdl: {
     displayName: "HDL cholesterol",
     aliases: ["hdl", "hdl c"],
+    category: "Blood count",
     measures: "Test text.",
-    low: "Low test text.",
-    high: null,
+    interpretation: { low: "Low test text.", high: null },
     source: "Example: https://example.org/hdl",
     reviewed: true,
   },
   tsh: {
     displayName: "TSH",
     aliases: ["thyroid stimulating hormone"],
+    category: "Blood count",
     measures: "Test text.",
-    low: "Low test text.",
-    high: "High test text.",
+    interpretation: { low: "Low test text.", high: "High test text." },
     source: "Example: https://example.org/tsh",
     reviewed: false,
   },
@@ -67,7 +67,7 @@ describe("explanation index: lookup", () => {
 
   test("returns the entry text with its key", () => {
     const found = index.find("hb");
-    assert.equal(found?.low, "Low test text.");
+    assert.equal(found?.interpretation.low, "Low test text.");
     assert.equal(found?.source, "Example: https://example.org/hb");
   });
 });
@@ -105,6 +105,15 @@ describe("explanation file validation", () => {
     assert.throws(() => parseExplanations({ hb: withoutFlag }));
   });
 
+  test("rejects a category outside the fixed list", () => {
+    assert.throws(() => parseExplanations({ hb: { ...fake.hemoglobin, category: "Misc" } }));
+  });
+
+  test("rejects low/high at the top level (they belong in interpretation)", () => {
+    const { interpretation, ...rest } = fake.hemoglobin!;
+    assert.throws(() => parseExplanations({ hb: { ...rest, ...interpretation } }));
+  });
+
   test("rejects two entries sharing an alias", () => {
     const clash = { a: { ...fake.hemoglobin! }, b: { ...fake.hdl!, aliases: ["HB"] } };
     assert.throws(() => createExplanationIndex(parseExplanations(clash)), /maps to both/);
@@ -137,13 +146,13 @@ describe("the real explanations.json", () => {
 
   test("every entry explains at least one direction", () => {
     for (const [key, entry] of entries) {
-      assert.ok(entry.low !== null || entry.high !== null, key);
+      assert.ok(entry.interpretation.low !== null || entry.interpretation.high !== null, key);
     }
   });
 
   test("no numbers in the explanation text (ranges come only from the report)", () => {
     for (const [key, entry] of entries) {
-      for (const text of [entry.measures, entry.low, entry.high]) {
+      for (const text of [entry.measures, entry.interpretation.low, entry.interpretation.high]) {
         if (text !== null) assert.doesNotMatch(text, /\d/, `${key}: ${text}`);
       }
     }
@@ -153,7 +162,7 @@ describe("the real explanations.json", () => {
     // A small guard for now; the full safety lint and denylist arrive in Step 7.
     const banned = /\b(you have|diagnos\w*|treat\w*|medicin\w*|medication\w*|drug\w*|dose\w*|dosage|tablet\w*|supplement\w*|prescri\w*|mg\b|take\b)/i;
     for (const [key, entry] of entries) {
-      for (const text of [entry.measures, entry.low, entry.high]) {
+      for (const text of [entry.measures, entry.interpretation.low, entry.interpretation.high]) {
         if (text !== null) assert.doesNotMatch(text, banned, `${key}: ${text}`);
       }
     }

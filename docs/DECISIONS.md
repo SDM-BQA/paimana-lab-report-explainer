@@ -45,3 +45,31 @@ decided, why, and what it costs.
   brief's "limits are inclusive" rule is applied to one-sided ranges too, so a value of exactly
   200 against `< 200` is `normal`. Change this if you prefer the strict reading; the test
   "value equal to a one-sided limit is normal" pins the current behaviour.
+
+## D5. Explanation entries get a category and a nested interpretation (Step 4)
+- **Decided by:** developer.
+- **What:** each entry in `explanations.json` has a `category` from a fixed list (Blood count,
+  Blood sugar, Lipids, Kidney, Thyroid) and its `low`/`high` text moves under `interpretation`.
+- **Why:** the UI can group results by category; the nested shape reads more clearly.
+- **Not adopted from the same proposal (yet):** a per-test `unit` list and sex-based
+  `referenceRange`. Units vary by lab, and v1 has no unit conversion (D4). Sex-based ranges are an
+  open scope question; see the Step 4 notes for what the sources contain.
+
+## D6. Sex-based fallback ranges: investigated, deferred to v2 (Step 4)
+- **Decided by:** developer, after reviewing what the sources contain.
+- **Proposal:** store reference ranges per sex in `explanations.json` and use them when a report
+  has no printed range.
+- **What the sources showed** (MedlinePlus pages fetched in Step 4):
+  - No numeric range at all for hemoglobin, WBC, platelets, glucose, creatinine, or TSH. The
+    hemoglobin page says ranges "may vary, based on the laboratory used and your age, race, and sex".
+  - Numbers exist only for HbA1c (below 5.7%), total cholesterol (under 200 mg/dL for adults,
+    under 170 for ages 19 and under), triglycerides (under 150 mg/dL for adults), and HDL, where
+    the same page gives two different thresholds ("low" vs "best").
+  - None of the 10 tests had a clear sex-specific range; where numbers exist they depend on age.
+- **Decision:** v1 keeps the printed range as the only source of truth (D4). No sex or age is
+  collected. Rows without a printed range stay `unchecked`.
+- **Why:** picking between conflicting thresholds would be a medical judgment by the code or AI;
+  sex and age would add patient data; the sources themselves point to the lab's own range.
+- **v2 idea:** a fallback range only when the report has none, with the user choosing sex (and
+  age group) in the UI, never stored, results labelled "general range, not your lab's", every
+  range sourced and reviewed by the developer.

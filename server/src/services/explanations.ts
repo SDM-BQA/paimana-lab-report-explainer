@@ -6,13 +6,19 @@ import rawExplanations from "../data/explanations.json" with { type: "json" };
 
 const TextOrNone = z.string().trim().min(1).nullable();
 
+// A fixed list so the UI can group results and a typo cannot create a new group.
+export const CATEGORIES = ["Blood count", "Blood sugar", "Lipids", "Kidney", "Thyroid"] as const;
+
 const EntrySchema = z.strictObject({
   displayName: z.string().trim().min(1),
   aliases: z.array(z.string().trim().min(1)).min(1),
+  category: z.enum(CATEGORIES),
   measures: z.string().trim().min(1),
-  // null means the source does not describe this direction, so no text is shown for it.
-  low: TextOrNone,
-  high: TextOrNone,
+  interpretation: z.strictObject({
+    // null means the source does not describe this direction, so no text is shown for it.
+    low: TextOrNone,
+    high: TextOrNone,
+  }),
   source: z.string().trim().regex(/https:\/\/\S+/, "must include an https:// URL"),
   reviewed: z.boolean(),
 });
