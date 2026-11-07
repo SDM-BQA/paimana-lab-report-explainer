@@ -31,6 +31,8 @@
   --band: rgba(15, 111, 102, 0.22);
   --band-edge: rgba(15, 111, 102, 0.55);
 
+  --tour-dim: rgba(18, 32, 30, 0.55);
+
   --info-bg: #e9f0f7;
   --info-border: #bcd0e6;
   --info-text: #1f3b5c;
@@ -90,6 +92,8 @@
 
     --band: rgba(95, 208, 189, 0.3);
     --band-edge: rgba(95, 208, 189, 0.7);
+
+    --tour-dim: rgba(0, 0, 0, 0.68);
 
     --info-bg: #14233a;
     --info-border: #29436a;
@@ -269,6 +273,12 @@ h3 {
   stroke: #ffffff;
   stroke-width: 1.5;
   stroke-linejoin: round;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .pill {
@@ -662,6 +672,18 @@ button.primary:hover:not(:disabled) {
 }
 
 .ghost:hover:not(:disabled) {
+  color: var(--accent);
+}
+
+.text-button {
+  padding: 0.4rem 0.5rem;
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+}
+
+.text-button:hover:not(:disabled) {
+  border-color: transparent;
   color: var(--accent);
 }
 
@@ -1167,6 +1189,122 @@ button.primary:hover:not(:disabled) {
   height: 1.7rem;
 }
 
+/* ---------- Guided tour ---------- */
+
+/* Leaves room above a target when the tour scrolls it to the top of a phone screen. */
+[data-tour] {
+  scroll-margin: 1.5rem;
+}
+
+/* One element does the dimming: its huge spread shadow covers the page, the hole is the target. */
+.tour-spotlight {
+  position: fixed;
+  z-index: 1000;
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 2px var(--saffron),
+    0 0 0 9999px var(--tour-dim);
+  pointer-events: none;
+}
+
+.tour-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--tour-dim);
+}
+
+.tour-dialog {
+  position: fixed;
+  z-index: 1001;
+  width: min(23rem, calc(100vw - 2rem));
+  padding: 1rem 1.2rem 1.15rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--saffron);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lift);
+  animation: tour-in 0.22s ease-out;
+}
+
+.tour-dialog-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes tour-in {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+.tour-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+
+.tour-count {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.tour-close {
+  margin-right: -0.5rem;
+}
+
+.tour-close:hover:not(:disabled) {
+  border-color: transparent;
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.tour-dialog h2 {
+  font-size: 1.3rem;
+  margin-bottom: 0.4rem;
+}
+
+.tour-dialog p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.tour-progress {
+  display: flex;
+  gap: 4px;
+  margin: 1rem 0;
+}
+
+.tour-progress span {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border);
+  transition: background-color 0.2s;
+}
+
+.tour-progress .reached {
+  background: var(--accent);
+}
+
+.tour-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.tour-actions .primary {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.95rem;
+}
+
 /* ---------- Small screens ---------- */
 
 @media (max-width: 640px) {
@@ -1245,12 +1383,24 @@ button.primary:hover:not(:disabled) {
   .result {
     padding-right: 1rem;
   }
+
+  /* A bottom sheet on phones: always reachable by thumb, never covering the top of the target. */
+  .tour-dialog,
+  .tour-dialog-center {
+    top: auto;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    width: auto;
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .spin,
   .card,
-  .meter-marker {
+  .meter-marker,
+  .tour-dialog {
     animation: none;
   }
 

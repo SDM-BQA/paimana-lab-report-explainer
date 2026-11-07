@@ -45,7 +45,7 @@ export function UploadPanel({ busy, onFile, onSample, onManual, onInvalid }: Pro
 
       <div className="upload-grid">
         {/* Samples come first and get the most room: this is a demo, and they are the safe path. */}
-        <div className="samples">
+        <div className="samples" data-tour="samples">
           <h3>Try a sample report</h3>
           <p className="hint">Synthetic reports made for this demo. Pick one to see the whole flow.</p>
           <ul className="sample-list">
@@ -66,7 +66,7 @@ export function UploadPanel({ busy, onFile, onSample, onManual, onInvalid }: Pro
           </ul>
         </div>
 
-        <div className="own-input">
+        <div className="own-input" data-tour="own-input">
           <input
             ref={input}
             id="report-file"

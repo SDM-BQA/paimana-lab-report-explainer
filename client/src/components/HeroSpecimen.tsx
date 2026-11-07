@@ -12,7 +12,7 @@ const EXAMPLE: { name: string; value: number; unit: string; printed: string; low
 
 export function HeroSpecimen() {
   return (
-    <figure className="specimen">
+    <figure className="specimen" data-tour="specimen">
       <figcaption>
         <span>Example result</span>
         <span className="file-tag">Synthetic</span>

@@ -1,9 +1,10 @@
-import { BookOpen, CircleAlert, ClipboardList, LoaderCircle, Lock, ShieldCheck, TriangleAlert } from "lucide-react";
+import { BookOpen, CircleAlert, ClipboardList, Compass, LoaderCircle, Lock, ShieldCheck, TriangleAlert } from "lucide-react";
 import { useRef, useState } from "react";
 import { analyzeRows, ApiError, extractReport, type AnalyzeResponse, type Row } from "./api.ts";
 import { Banner } from "./components/Banner.tsx";
 import { Brand } from "./components/Brand.tsx";
 import { Footer } from "./components/Footer.tsx";
+import { GuidedTour } from "./components/GuidedTour.tsx";
 import { HeroSpecimen } from "./components/HeroSpecimen.tsx";
 import { ResultsView, type Language } from "./components/ResultsView.tsx";
 import { RowsTable } from "./components/RowsTable.tsx";
@@ -11,6 +12,7 @@ import { ServerStatus } from "./components/ServerStatus.tsx";
 import { StepTitle } from "./components/StepTitle.tsx";
 import { UploadPanel } from "./components/UploadPanel.tsx";
 import { MAX_ROWS, type Sample } from "./constants.ts";
+import { hasSeenTour, markTourSeen } from "./tourSteps.ts";
 import { useServerStatus } from "./useServerStatus.ts";
 
 type Busy = null | "reading" | "checking";
@@ -29,6 +31,8 @@ export default function App() {
   // The exact rows that produced `analysis`, so a language switch re-checks the same data.
   const [checkedRows, setCheckedRows] = useState<Row[]>([]);
   const [language, setLanguage] = useState<Language>("en");
+  // Opens by itself on a first visit only; the top-bar button replays it.
+  const [touring, setTouring] = useState(() => !hasSeenTour());
   const nextId = useRef(1);
   const newId = () => `m${nextId.current++}`;
 
@@ -97,13 +101,24 @@ export default function App() {
     );
   }
 
+  function endTour() {
+    markTourSeen();
+    setTouring(false);
+  }
+
   return (
     <>
       <Banner />
       <main className="container">
         <div className="topbar">
           <Brand />
-          <span className="pill">Demo</span>
+          <div className="topbar-actions">
+            <button type="button" className="text-button" onClick={() => setTouring(true)}>
+              <Compass className="icon" size={16} aria-hidden="true" />
+              Take the tour
+            </button>
+            <span className="pill">Demo</span>
+          </div>
         </div>
         <header className="hero">
           <div className="hero-copy">
@@ -115,7 +130,7 @@ export default function App() {
               Upload a lab report or type values in. Plain code (not AI) checks each value against the range printed on
               the report, and explains flagged results in simple words.
             </p>
-            <ul className="features">
+            <ul className="features" data-tour="principles">
               <li>
                 <ShieldCheck className="icon" size={18} aria-hidden="true" /> Flags decided by code, not AI
               </li>
@@ -216,6 +231,7 @@ export default function App() {
         )}
       </main>
       <Footer />
+      {touring && <GuidedTour onClose={endTour} />}
     </>
   );
 }
