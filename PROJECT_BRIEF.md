@@ -189,9 +189,12 @@ Error shape everywhere: `{ "error": "message" }`.
   "hemoglobin": {
     "displayName": "Hemoglobin",
     "aliases": ["hb", "hgb", "haemoglobin"],
+    "category": "Blood count",
     "measures": "One sentence on what the test measures.",
-    "low": "One or two sentences, general, non-diagnostic.",
-    "high": "One or two sentences, general, non-diagnostic.",
+    "interpretation": {
+      "low": "One or two sentences, general, non-diagnostic (or null if the source is silent).",
+      "high": "One or two sentences, general, non-diagnostic (or null if the source is silent)."
+    },
     "source": "Name + URL of the reputable page the text is based on",
     "reviewed": false
   }

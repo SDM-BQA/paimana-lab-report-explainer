@@ -45,3 +45,12 @@ decided, why, and what it costs.
   brief's "limits are inclusive" rule is applied to one-sided ranges too, so a value of exactly
   200 against `< 200` is `normal`. Change this if you prefer the strict reading; the test
   "value equal to a one-sided limit is normal" pins the current behaviour.
+
+## D5. Explanation entries get a category and a nested interpretation (Step 4)
+- **Decided by:** developer.
+- **What:** each entry in `explanations.json` has a `category` from a fixed list (Blood count,
+  Blood sugar, Lipids, Kidney, Thyroid) and its `low`/`high` text moves under `interpretation`.
+- **Why:** the UI can group results by category; the nested shape reads more clearly.
+- **Not adopted from the same proposal (yet):** a per-test `unit` list and sex-based
+  `referenceRange`. Units vary by lab, and v1 has no unit conversion (D4). Sex-based ranges are an
+  open scope question; see the Step 4 notes for what the sources contain.
