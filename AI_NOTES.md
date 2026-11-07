@@ -171,7 +171,7 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   a third time (branch cut before Step 9 merged), and `set -e` did not stop the commit.
 - **Developer note:**
 
-### Step 11: Deploy (branch `chore/deploy-config`, PR #__)
+### Step 11: Deploy (branch `chore/deploy-config`, PR #14)
 - **Claude generated:** proxy and IP-check settings, the Node 22 pin, the deploy guide, and tests.
 - **I decided / changed:** I do the dashboards myself; Claude only prepares code and steps.
 - **What worked (instructions or prompts):** "check current docs": they showed Render now
@@ -179,7 +179,19 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   Rehearsing both builds in clean copies before touching a dashboard.
 - **What went wrong or surprised me, and how it was caught:** two silent traps were found by
   reading docs and thinking through the config, before deploying: an open Node version range,
-  and a trailing slash in `CORS_ORIGIN` breaking every request. Live checks: pending.
+  and a trailing slash in `CORS_ORIGIN` breaking every request. Live checks later passed (see the
+  Step 11 section of STEP_BY_STEP.md), including a real upload matching the truth file 40/40.
+- **Developer note:**
+
+### Step 12: Final docs (branch `docs/final`, PR #__)
+- **Claude generated:** the README, the case study draft, decisions D11 to D13 with an index,
+  and the live-deploy verification notes.
+- **I decided / changed:** deployed it myself on Render and Vercel with my own domain (D13).
+  Still mine to write: What I learned, What I decided myself, and the Where AI was wrong table.
+- **What worked (instructions or prompts):** "record only what happened": the case study's
+  examples of AI mistakes all come from this log, and the eval caveat is stated next to the 100%.
+- **What went wrong or surprised me, and how it was caught:** the draft miscounted the PRs (14 vs
+  15), caught on re-read. All 16 relative links were checked by a script.
 - **Developer note:**
 
 ## 4. Where AI Was Wrong (highlights)
