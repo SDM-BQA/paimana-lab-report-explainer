@@ -138,7 +138,7 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   ten truth files as modified; a diff ignoring line endings showed only 05 really changed.
 - **Developer note:**
 
-### Step 8: Client upload and review (branch `feat/client-upload-review`, PR #__)
+### Step 8: Client upload and review (branch `feat/client-upload-review`, PR #10)
 - **Claude generated:** the Vite React app (banner, wake-up message, upload, samples, manual
   entry, editable table) and the D10 server change.
 - **I decided / changed:** nothing changed from the plan in this step.
@@ -148,6 +148,16 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   TypeScript setting from the template (`erasableSyntaxOnly`), and the linter flagged fast-refresh
   and effect issues; all fixed. Claude's notes script failed twice in a row (Steps 7 and 8) for
   the same reason; now its scripts stop on the first error. Claude could not click the UI itself.
+- **Developer note:**
+
+### Step 9: Client results (branch `feat/client-results`, PR #__)
+- **Claude generated:** status badges, the results view, the language toggle, and the footer.
+- **I decided / changed:** reviewed all 10 explanation entries against MedlinePlus (Claude made
+  the git commit for me on `chore/review-and-png`, since my edits were still uncommitted).
+- **What worked (instructions or prompts):** checking contrast with real numbers instead of
+  claiming it, and re-checking the same rows on a language switch so flags cannot change.
+- **What went wrong or surprised me, and how it was caught:** no issues found in the code. Hindi
+  output was again safe but shorter than the reviewed English (details dropped).
 - **Developer note:**
 
 ## 4. Where AI Was Wrong (highlights)

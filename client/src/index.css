@@ -213,3 +213,160 @@ button.primary {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+/* ---------- Results (Step 9) ---------- */
+
+.results-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.toggle button {
+  border: none;
+  border-radius: 0;
+}
+
+.toggle button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.summary {
+  font-weight: 600;
+  margin: 0.5rem 0 1rem;
+}
+
+.result-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.result {
+  border: 1px solid var(--border);
+  border-left-width: 6px;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+.result-high {
+  border-left-color: #b42318;
+}
+.result-low {
+  border-left-color: #1d4ed8;
+}
+.result-normal {
+  border-left-color: #15803d;
+}
+.result-unchecked {
+  border-left-color: #6b7280;
+}
+
+.result-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.result-top h3 {
+  margin: 0;
+}
+
+/* Text colours below meet WCAG AA contrast on their backgrounds. */
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+.badge-high {
+  background: #fde8e7;
+  color: #8a1c12;
+  border-color: #f2b8b5;
+}
+.badge-low {
+  background: #e6edfd;
+  color: #1e3a8a;
+  border-color: #b9cbf7;
+}
+.badge-normal {
+  background: #e3f4e8;
+  color: #14532d;
+  border-color: #b4dfc0;
+}
+.badge-unchecked {
+  background: #eef0f3;
+  color: #374151;
+  border-color: #cfd4da;
+}
+
+.result-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 2rem;
+  margin: 0.5rem 0 0;
+}
+
+.result-facts dt {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.result-facts dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.reason {
+  margin: 0.5rem 0 0;
+  font-size: 0.95rem;
+}
+
+.explanation {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: var(--bg);
+  border-radius: 6px;
+}
+
+.explanation p {
+  margin: 0 0 0.25rem;
+}
+
+.disclaimer {
+  margin: 1.25rem 0 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--warn-border);
+  background: var(--warn-bg);
+  border-radius: 8px;
+}
+
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.footer p {
+  max-width: 70ch;
+  margin: 0.25rem auto;
+}
