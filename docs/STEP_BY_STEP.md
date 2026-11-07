@@ -22,8 +22,8 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 | 7 | `feat/analyze-endpoint` | merged | #8 |
 | 8 | `feat/client-upload-review` | merged | #10 |
 | 9 | `feat/client-results` | merged | #12 (review data: #11) |
-| 10 | `test/eval-and-safety` | in review | |
-| 11 | `chore/deploy-config` | not started | |
+| 10 | `test/eval-and-safety` | merged | #13 |
+| 11 | `chore/deploy-config` | in review (live check pending) | |
 | 12 | `docs/final` | not started | |
 
 Status values: `not started`, `in progress`, `in review`, `merged`.
@@ -638,13 +638,37 @@ read the explanation outputs for fixtures 02, 03, and 10.
 **Checks:** Live `/api/health` works. A sample report works end to end on the live site. A request
 from another origin is blocked by CORS. The first request after idle shows the wake-up message.
 
-**How Claude did it:** _(fill in)_
+**How Claude did it:**
+- Checked current docs before changing anything: express-rate-limit's proxy guide (set
+  `trust proxy` to the hop count, verify with an `/ip` endpoint), Render's Node version page
+  (`NODE_VERSION` > `.node-version` > `.nvmrc` > `engines`; new services default to Node 24),
+  Render's free tier page (15 min spin-down, ~1 min wake, 750 h/month, hobby use), and Vercel's
+  Vite page. Render's docs did not say whether dev dependencies are installed, so the build
+  command uses `npm ci --include=dev`.
+- Server: `TRUST_PROXY` hop count (0 locally, 1 on Render); `DEBUG_CLIENT_IP` (off by default)
+  for a one-time `/api/debug/ip` check; `CORS_ORIGIN` trailing slashes stripped; `engines`
+  pinned to `22.x`; startup log shows the proxy setting. `.env.example` updated.
+- `docs/DEPLOY.md`: click-by-click Render → Vercel → Render (CORS) guide, live checklist,
+  troubleshooting, free-tier facts with sources. Claude does not touch the dashboards.
 
-**Verification:** _(fill in)_
+**Verification:**
+- `npm run typecheck` clean; `npm test` 166/166 (9 new: trailing slash, defaults, validation,
+  IP with and without the proxy, prepended fake IP ignored, separate rate-limit counters per user).
+- Render rehearsal in a clean copy with `NODE_ENV=production`: `npm ci --include=dev && npm run
+  build` succeeded, `dist/data/` has both JSON files, `node dist/index.js` started with
+  "trust proxy hops: 1", and `CORS_ORIGIN` set with a trailing slash still allowed the origin.
+- Vercel rehearsal: `VITE_API_URL=… npm run build` baked the URL into the bundle, 0
+  `localhost:5000` occurrences, samples included, no key or "gemini" string in the JS.
+- **Live checks: pending** until the developer deploys (see DEPLOY.md section 4).
 
-**Problems and fixes:** _(fill in)_
+**Problems and fixes:**
+- Found while reading docs, fixed before deploying: an open `engines` range would pick the newest
+  Node on Render; a trailing slash in `CORS_ORIGIN` would silently break every browser request.
 
-**Commits:** _(fill in)_
+**Commits:**
+- `feat(server): add proxy trust, client-IP check, and Node 22 pin for Render`
+- `docs(deploy): add Render and Vercel deployment guide`
+- `docs(notes): record step 11 (live check pending)`
 
 ---
 

@@ -10,8 +10,17 @@ const required = (hint: string) => z.string({ error: `is required (${hint})` }).
 const ConfigSchema = z.object({
   GEMINI_API_KEY: required("get one from Google AI Studio"),
   GEMINI_MODEL: required("a free-tier model name from Google AI Studio"),
-  CORS_ORIGIN: z.url({ error: "must be a full URL such as http://localhost:5173" }),
+  // A browser's Origin header never ends in "/", so a pasted "https://x.vercel.app/" would never
+  // match and every request would fail CORS. Strip trailing slashes.
+  CORS_ORIGIN: z
+    .url({ error: "must be a full URL such as http://localhost:5173" })
+    .transform((url) => url.replace(/\/+$/, "")),
   PORT: z.coerce.number().int().min(1).max(65535).default(5000),
+  // Number of proxies in front of the app (1 on Render). 0 locally: with no proxy, trusting
+  // X-Forwarded-For would let anyone fake their IP and dodge the rate limit.
+  TRUST_PROXY: z.coerce.number().int().min(0).max(5).default(0),
+  // Temporarily "true" after deploying to check TRUST_PROXY via GET /api/debug/ip. Off by default.
+  DEBUG_CLIENT_IP: z.enum(["true", "false"], { error: "must be true or false" }).default("false").transform((v) => v === "true"),
 });
 
 export type Config = z.infer<typeof ConfigSchema>;

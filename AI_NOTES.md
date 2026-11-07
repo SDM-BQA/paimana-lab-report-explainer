@@ -160,7 +160,7 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   output was again safe but shorter than the reviewed English (details dropped).
 - **Developer note:**
 
-### Step 10: Eval and safety (branch `test/eval-and-safety`, PR #__)
+### Step 10: Eval and safety (branch `test/eval-and-safety`, PR #13)
 - **Claude generated:** the eval script with caching, and the first results file.
 - **I decided / changed:** nothing changed from the plan in this step.
 - **What worked (instructions or prompts):** reusing the real server code in the eval, caching
@@ -169,6 +169,17 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   the Hindi found a dropped "low" sentence for HDL and a repeated typo, which no metric caught.
   The 100% extraction is on clean generated files, not real scans. Claude's notes script failed
   a third time (branch cut before Step 9 merged), and `set -e` did not stop the commit.
+- **Developer note:**
+
+### Step 11: Deploy (branch `chore/deploy-config`, PR #__)
+- **Claude generated:** proxy and IP-check settings, the Node 22 pin, the deploy guide, and tests.
+- **I decided / changed:** I do the dashboards myself; Claude only prepares code and steps.
+- **What worked (instructions or prompts):** "check current docs": they showed Render now
+  defaults new services to Node 24 and that the proxy setting should be verified, not assumed.
+  Rehearsing both builds in clean copies before touching a dashboard.
+- **What went wrong or surprised me, and how it was caught:** two silent traps were found by
+  reading docs and thinking through the config, before deploying: an open Node version range,
+  and a trailing slash in `CORS_ORIGIN` breaking every request. Live checks: pending.
 - **Developer note:**
 
 ## 4. Where AI Was Wrong (highlights)
