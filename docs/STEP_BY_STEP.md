@@ -23,8 +23,8 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 | 8 | `feat/client-upload-review` | merged | #10 |
 | 9 | `feat/client-results` | merged | #12 (review data: #11) |
 | 10 | `test/eval-and-safety` | merged | #13 |
-| 11 | `chore/deploy-config` | in review (live check pending) | |
-| 12 | `docs/final` | not started | |
+| 11 | `chore/deploy-config` | merged (live) | #14 |
+| 12 | `docs/final` | in review | |
 
 Status values: `not started`, `in progress`, `in review`, `merged`.
 
@@ -659,7 +659,14 @@ from another origin is blocked by CORS. The first request after idle shows the w
   "trust proxy hops: 1", and `CORS_ORIGIN` set with a trailing slash still allowed the origin.
 - Vercel rehearsal: `VITE_API_URL=… npm run build` baked the URL into the bundle, 0
   `localhost:5000` occurrences, samples included, no key or "gemini" string in the JS.
-- **Live checks: pending** until the developer deploys (see DEPLOY.md section 4).
+- **Live checks (after the developer deployed; API on Render, site at
+  `https://paimana.sundaramtech.dev` on Vercel):** health 200; CORS allows exactly the site and
+  returns the site's origin to any other origin (so browsers block them); HSTS, nosniff and
+  rate-limit headers present; `/api/debug/ip` returns 404 (off); the site and samples load; the
+  live bundle points at the Render URL with no `localhost` and no key; a real upload of sample 04
+  through the live API matched the truth file 40/40 fields, and analyze returned 1 low, 3 high,
+  4 in range, 4 explained, with the disclaimer. The developer reported the site working in the
+  browser. The one-time proxy IP check is the developer's (DEPLOY.md section 4).
 
 **Problems and fixes:**
 - Found while reading docs, fixed before deploying: an open `engines` range would pick the newest
@@ -669,6 +676,7 @@ from another origin is blocked by CORS. The first request after idle shows the w
 - `feat(server): add proxy trust, client-IP check, and Node 22 pin for Render`
 - `docs(deploy): add Render and Vercel deployment guide`
 - `docs(notes): record step 11 (live check pending)`
+- Live results added in the Step 12 branch (`docs(notes): record live deploy checks and step 12`)
 
 ---
 
@@ -690,10 +698,28 @@ from another origin is blocked by CORS. The first request after idle shows the w
 **Checks:** Links work. README setup works from a fresh clone if time allows. No real medical data
 in any screenshot.
 
-**How Claude did it:** _(fill in)_
+**How Claude did it:**
+- Checked the live deployment first (results recorded under Step 11), then wrote the docs.
+- `README.md`: what it does, the "AI proposes, code decides" table, safety and privacy, eval
+  results with their caveat, architecture, local setup, commands, limitations, How I used AI.
+- `docs/DECISIONS.md`: added an index and D11 (no database), D12 (curated explanations), D13
+  (hosting + custom domain). Unit conversion and limits were already covered in D4.
+- `docs/CASE_STUDY.md`: draft following the brief's outline, using only recorded facts; two real
+  AI mistakes; sections for the developer's own words are marked.
+- Left for the developer, as the rules require: AI_NOTES "What I learned", "What I decided
+  myself", "Division of labor", "What I would not trust AI with", the "Where AI was wrong" table,
+  every "Developer note", screenshots, and the `v1.0.0` tag.
 
-**Verification:** _(fill in)_
+**Verification:**
+- A script checked every relative link in README, CASE_STUDY, DEPLOY, DECISIONS, AI_NOTES, and
+  STEP_BY_STEP: 16 links, 0 broken. External links (site, API, repo) were checked live in Step 11.
+- Numbers in the README and case study (166 tests, eval table, 15 PRs) match the repo.
+- No screenshots added: Claude has no browser; the README has a placeholder for synthetic-data images.
 
-**Problems and fixes:** _(fill in)_
+**Problems and fixes:** The case study first said "14 PRs"; corrected to 15 (this PR included).
 
-**Commits:** _(fill in)_
+**Commits:**
+- `docs(decisions): add index and record D11-D13`
+- `docs(readme): write the full README`
+- `docs(case-study): draft the portfolio case study`
+- `docs(notes): record live deploy checks and step 12`
