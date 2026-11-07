@@ -1,6 +1,6 @@
 {
   "id": "05",
-  "case": "Values exactly on limits (inclusive = normal)",
+  "case": "Values exactly on limits (literal rule)",
   "file": "reports/05.pdf",
   "rows": [
     {
@@ -30,7 +30,7 @@
       "unit": "mg/dL",
       "printedRange": "< 200",
       "expected": {
-        "status": "normal"
+        "status": "high"
       }
     },
     {
@@ -40,7 +40,7 @@
       "unit": "mg/dL",
       "printedRange": "> 40",
       "expected": {
-        "status": "normal"
+        "status": "low"
       }
     },
     {

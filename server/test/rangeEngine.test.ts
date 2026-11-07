@@ -42,9 +42,22 @@ describe("evaluate: inclusive limits (fixture 05 case)", () => {
     assert.equal(evaluate(row(17, "13.0 - 17.0")).status, "normal");
   });
 
-  test("value equal to a one-sided limit is normal", () => {
-    assert.equal(evaluate(row(200, "< 200")).status, "normal");
-    assert.equal(evaluate(row(40, "> 40")).status, "normal");
+  test("literal rule: a value equal to a strict one-sided limit is outside it", () => {
+    assert.equal(evaluate(row(200, "< 200")).status, "high");
+    assert.equal(evaluate(row(40, "> 40")).status, "low");
+  });
+
+  test("literal rule: a value equal to an inclusive one-sided limit is normal", () => {
+    assert.equal(evaluate(row(200, "<= 200")).status, "normal");
+    assert.equal(evaluate(row(200, "≤ 200")).status, "normal");
+    assert.equal(evaluate(row(5, "Up to 5.0")).status, "normal");
+    assert.equal(evaluate(row(40, ">= 40")).status, "normal");
+    assert.equal(evaluate(row(40, "≥ 40")).status, "normal");
+  });
+
+  test("just inside a strict limit is normal", () => {
+    assert.equal(evaluate(row(199.9, "< 200")).status, "normal");
+    assert.equal(evaluate(row(40.1, "> 40")).status, "normal");
   });
 
   test("just outside a limit is flagged", () => {
