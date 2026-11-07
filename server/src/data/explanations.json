@@ -1,3 +1,4 @@
+
 {
   "hemoglobin": {
     "displayName": "Hemoglobin",
@@ -9,7 +10,7 @@
       "high": "A high hemoglobin level can be related to things such as lung or heart conditions, sleep apnea, or a bone marrow condition that makes too many red blood cells."
     },
     "source": "MedlinePlus, Hemoglobin Test: https://medlineplus.gov/lab-tests/hemoglobin-test/",
-    "reviewed": false
+    "reviewed": true
   },
   "wbc": {
     "displayName": "White blood cell count (WBC)",
@@ -21,7 +22,7 @@
       "high": "A high white blood cell count is often related to an infection or inflammation. Allergies, stress, smoking, pregnancy, tissue damage from a burn or surgery, and some blood conditions can also raise it."
     },
     "source": "MedlinePlus, White Blood Count (WBC): https://medlineplus.gov/lab-tests/white-blood-count-wbc/",
-    "reviewed": false
+    "reviewed": true
   },
   "platelets": {
     "displayName": "Platelet count",
@@ -33,7 +34,7 @@
       "high": "A high platelet count can be related to infection, inflammation (for example inflammatory bowel disease or rheumatoid arthritis), anemia, severe blood loss, and some other conditions."
     },
     "source": "MedlinePlus, Platelet Tests: https://medlineplus.gov/lab-tests/platelet-tests/",
-    "reviewed": false
+    "reviewed": true
   },
   "glucose": {
     "displayName": "Blood glucose",
@@ -45,7 +46,7 @@
       "high": "A high blood glucose level can be a sign of diabetes or a higher risk of it. It can also be related to an overactive thyroid, a pancreas problem, or stress from surgery, serious illness, or injury."
     },
     "source": "MedlinePlus, Blood Glucose Test: https://medlineplus.gov/lab-tests/blood-glucose-test/",
-    "reviewed": false
+    "reviewed": true
   },
   "hba1c": {
     "displayName": "HbA1c",
@@ -57,7 +58,7 @@
       "high": "A high result means blood glucose has been higher than usual over the past few months. This can be a sign of diabetes or prediabetes, and doctors often use more than one test to confirm it."
     },
     "source": "MedlinePlus, Hemoglobin A1C (HbA1c) Test: https://medlineplus.gov/lab-tests/hemoglobin-a1c-hba1c-test/",
-    "reviewed": false
+    "reviewed": true
   },
   "total_cholesterol": {
     "displayName": "Total cholesterol",
@@ -69,7 +70,7 @@
       "high": "High cholesterol can raise the risk of heart disease over time."
     },
     "source": "MedlinePlus, Cholesterol Levels: https://medlineplus.gov/lab-tests/cholesterol-levels/",
-    "reviewed": false
+    "reviewed": true
   },
   "hdl": {
     "displayName": "HDL cholesterol",
@@ -81,7 +82,7 @@
       "high": null
     },
     "source": "MedlinePlus, Cholesterol Levels: https://medlineplus.gov/lab-tests/cholesterol-levels/",
-    "reviewed": false
+    "reviewed": true
   },
   "triglycerides": {
     "displayName": "Triglycerides",
@@ -93,7 +94,7 @@
       "high": "High triglycerides may mean a higher risk of heart disease, stroke, and other conditions that affect the arteries."
     },
     "source": "MedlinePlus, Triglycerides Test: https://medlineplus.gov/lab-tests/triglycerides-test/",
-    "reviewed": false
+    "reviewed": true
   },
   "creatinine": {
     "displayName": "Creatinine",
@@ -105,7 +106,7 @@
       "high": "A high creatinine level can be related to kidney problems, but it does not always mean there is a kidney problem. Conditions that affect the kidneys, such as heart failure or diabetes, can also raise it."
     },
     "source": "MedlinePlus, Creatinine Test: https://medlineplus.gov/lab-tests/creatinine-test/",
-    "reviewed": false
+    "reviewed": true
   },
   "tsh": {
     "displayName": "TSH (thyroid-stimulating hormone)",
@@ -117,6 +118,6 @@
       "high": "A high TSH level often happens when the thyroid is not making enough thyroid hormone, which can be related to an underactive thyroid."
     },
     "source": "MedlinePlus, TSH (Thyroid-stimulating hormone) Test: https://medlineplus.gov/lab-tests/tsh-thyroid-stimulating-hormone-test/",
-    "reviewed": false
+    "reviewed": true
   }
 }
