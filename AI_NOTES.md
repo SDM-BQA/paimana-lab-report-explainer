@@ -38,6 +38,19 @@ Claude appends one entry per step, under 150 words, using this format. Only real
 
 <!-- Entries start below this line -->
 
+### Step 1: Project setup (branch `chore/project-setup`, PR #__)
+- **Claude generated:** the docs kit extracted from the master file, `DECISIONS.md`, the env
+  examples, the folder skeleton, and the README stub.
+- **I decided / changed:** renamed the project from LabLens to Paimana; switched from JavaScript
+  to TypeScript; confirmed that Gemini runs the app and Claude only helps build it.
+- **What worked (instructions or prompts):** the master file's bootstrap procedure. Claude
+  checked `ANTHROPIC_API_KEY` without printing it and verified the ignore rules with
+  `git check-ignore` using temporary `.env` files.
+- **What went wrong or surprised me, and how it was caught:** Claude first read my question about
+  "founding" as "funding" and said it was guessing. The master file was not in the folder, so
+  Claude wrote it from the chat. `gh` is missing and there is no remote yet, so the PR waits.
+- **Developer note:**
+
 ## 4. Where AI Was Wrong (highlights)
 
 Curate the best 3 to 5 from the build log: the mistake, how I noticed, the fix.

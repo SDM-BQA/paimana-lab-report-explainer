@@ -13,7 +13,7 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 
 | # | Branch | Status | PR |
 |---|--------|--------|----|
-| 1 | `chore/project-setup` | in progress | |
+| 1 | `chore/project-setup` | in review | pending (no remote yet) |
 | 2 | `feat/server-skeleton` | not started | |
 | 3 | `feat/range-engine` | not started | |
 | 4 | `feat/explanations-data` | not started | |
@@ -53,13 +53,39 @@ skeleton, and the docs kit committed. No application code yet.
 **Checks:** `git status` shows no secrets. A test file named `server/.env` is ignored by
 `git check-ignore`. Docs kit files are present.
 
-**How Claude did it:** _(Claude fills in: approach, files created, commands run, key choices.)_
+**How Claude did it:**
+- Bootstrap (on `main`, before this branch): checked that `ANTHROPIC_API_KEY` was not set
+  (printed only "not set"), ran `git init -b main`, created `.gitignore` from Part 6, saved the
+  master file, and made the single allowed commit on `main`.
+- The developer then asked for two changes: rename the project to **Paimana** and use
+  **TypeScript** instead of JavaScript. They also confirmed that the app uses Gemini, not Claude.
+- On `chore/project-setup`, extracted Parts 1 to 5 into `PROJECT_BRIEF.md`, `CLAUDE.md`,
+  `AI_NOTES.md`, `docs/STEP_BY_STEP.md`, and `.github/pull_request_template.md`, adapting them:
+  name changed, `.js` file names changed to `.ts`, a TypeScript row and `tsx`/`tsc` tooling added
+  to the stack, `npm run typecheck` added to the checks and the PR template, and the Render
+  build/start changed to `npm run build` / `node dist/index.js`.
+- Created `docs/DECISIONS.md` with D1 (name), D2 (TypeScript), D3 (Gemini runs the app).
+- Created both `.env.example` files from Part 7, a README stub, and the Section 8 folder skeleton
+  with `.gitkeep` files. Extended `.gitignore` with `*.tsbuildinfo`.
+- Left the unrelated empty `test.ts` in the root uncommitted; awaiting the developer's decision.
 
-**Verification:** _(what was run and what it showed)_
+**Verification:**
+- Created temporary `server/.env` and `client/.env`; `git check-ignore -v` showed both ignored by
+  the `.env` rule, plus `eval/cache/`, `server/dist/`, and `*.tsbuildinfo`. Deleted the temp files.
+- `git check-ignore` on both `.env.example` files returned exit 1 (not ignored), as intended.
+- Reviewed `git diff --staged` before each commit: the env examples contain empty placeholders only.
 
-**Problems and fixes:** _(or "No issues found")_
+**Problems and fixes:**
+- The master file was attached in chat rather than saved in the folder, so Claude wrote it into
+  the repo from the chat content before the bootstrap commit.
+- `gh` (GitHub CLI) is not installed and the repo has no remote yet, so the branch cannot be
+  pushed or a PR opened until the developer adds the remote.
+- Git prints "LF will be replaced by CRLF" warnings on Windows. These are harmless and left as is.
 
-**Commits:** _(list of commit subjects)_
+**Commits:**
+- `docs: add docs kit adapted for Paimana and TypeScript`
+- `chore: add env examples, folder skeleton, and README stub`
+- `docs(notes): record step 1`
 
 ---
 
