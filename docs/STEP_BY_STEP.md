@@ -765,3 +765,42 @@ never shown by colour alone. No real data in any preview.
 - `chore(client): add icon and self-hosted font packages`
 - `feat(client): give the interface a modern look`
 - `docs(notes): record step 13`
+
+### Step 13b: design pass (same branch)
+
+**Ask Claude (as given):** `/design-director` (a design-review skill), run on the step 13 result.
+
+**How Claude did it:**
+- Reviewed step 13 against the skill's anti-generic rules and found: a gradient headline,
+  background glow blobs, a gradient logo tile, a "sparkles" Demo pill, three identical upload
+  cards, one font for everything, an unstyled mobile table, and a static banner marked
+  `role="alert"`.
+- New identity, "printed lab report": warm paper background, ink teal plus a saffron accent,
+  and a separately designed dark palette. Fraunces (display) for headings, JetBrains Mono for
+  every value, unit and range. Both are self-hosted through `@fontsource-variable`.
+- Added `RangeMeter.tsx` and `meter.ts`, which draw the printed range as a band and the value as
+  a marker, using only the `range` the server's engine already returned. The flag still comes only
+  from the server; the meter is hidden from screen readers because the text next to it says the same thing.
+- Hero is now split: copy on the left, an example result slip on the right (`HeroSpecimen.tsx`,
+  synthetic values, reusing the real meter and badge). Upload is asymmetric: a sample list on the
+  left; drop zone and manual entry on the right. Results are one ledger instead of separate cards.
+- New logo and favicon: a pointer resting on a scale with a saffron reference band.
+- On phones the review table stacks into labelled blocks. The banner now uses `role="note"`.
+
+**Verification:**
+- `npm run build` (type check + build) and `npm run lint` pass.
+- Headless Edge screenshots of light and dark mode, plus results on a temporary synthetic-data
+  preview page (deleted before commit). Phone layout checked inside 375 px iframes:
+  `scrollWidth` equalled `clientWidth` on both pages, so no horizontal overflow. The live upload
+  flow was not clicked through (no server running).
+
+**Problems and fixes:**
+- The first logo drew the marker as a line crossing the track, which read as a plus sign or
+  medical cross at small size. Caught in the screenshot and changed to a pointer above the scale.
+- The meter's reference band was too faint in dark mode (caught in the screenshot); raised its
+  opacity.
+
+**Commits:**
+- `chore(client): add display and mono font packages`
+- `feat(client): give the interface a lab-report identity`
+- `docs(notes): record step 13 design pass`

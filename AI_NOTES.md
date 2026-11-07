@@ -205,6 +205,18 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   viewport limit, checked by measuring the viewport width.
 - **Developer note:**
 
+### Step 13b: design pass (branch `feat/ui-refresh`, PR #__)
+- **Claude generated:** a "printed lab report" identity: paper and ink palette, Fraunces and
+  JetBrains Mono, a range meter built from the server's own range, a split hero with a synthetic
+  example, an asymmetric upload panel, a stacked phone table, and a new logo.
+- **I decided / changed:** ran the `/design-director` skill on the step 13 result.
+- **What worked (instructions or prompts):** reviewing against a list of named generic patterns
+  first, then checking every change in screenshots.
+- **What went wrong or surprised me, and how it was caught:** the first logo looked like a
+  medical cross at small size, and the meter band was too faint in dark mode. Both were caught
+  in screenshots and fixed.
+- **Developer note:**
+
 ## 4. Where AI Was Wrong (highlights)
 
 Curate the best 3 to 5 from the build log: the mistake, how I noticed, the fix.
