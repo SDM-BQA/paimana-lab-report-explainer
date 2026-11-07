@@ -228,9 +228,19 @@ least the entries you plan to use in the demo.
   brackets. Exact match only, no fuzzy matching. Unreviewed entries are never returned. Alias
   clashes throw at startup.
 - The JSON is imported with `with { type: "json" }`, so `tsc` copies it into `dist/`.
+- **Developer proposals during review:**
+  - Proposed a `unit` field per entry. Claude advised against it (units vary by lab, and v1 has
+    no conversion), and it was not added.
+  - Proposed `category`, nested `interpretation`, and sex-based `referenceRange`. The developer
+    chose to add the first two (D5). A one-off script restructured the JSON, then every value was
+    compared with the previous commit: all text identical, 10/10 entries.
+  - For sex-based ranges, Claude fetched the range information from every source page before
+    writing anything. The sources gave no sex-specific ranges (details in D6), so the developer
+    chose to defer the feature to v2.
 
 **Verification:**
-- `npm run typecheck`: clean. `npm test`: 73 tests, 73 pass (19 new).
+- `npm run typecheck`: clean. `npm test`: 73 tests, 73 pass (19 new). After the D5
+  restructure: 75 tests, 75 pass (2 more: unknown category rejected, top-level low/high rejected).
 - Built with `npm run build`; `dist/data/explanations.json` exists. Loading the compiled module
   under plain Node reported 10 entries, 0 reviewed, and `find("Hb")` → `null`.
 - Tests on the real file: valid shape, 8 to 10 entries, https source on each, no digits in the
@@ -241,6 +251,12 @@ least the entries you plan to use in the demo.
   HTTP 404. Caught by fetching it. HDL now cites the Cholesterol Levels page, which covers HDL.
 - HbA1c's display name contains digits, so the text-has-no-numbers rule meant its explanation
   could not repeat "HbA1c". The text says "A high result" instead.
+- During the D5 restructure, Claude's shell command `python - || node ...` silently did nothing,
+  because Python exists on this machine and succeeded on empty input, so the Node fallback never
+  ran. Caught by checking that the grep for the new fields printed nothing; re-ran with Node directly.
+- The tool that summarizes fetched pages gave different HDL thresholds in two fetches of the same
+  page ("< 40 / < 50 is low" vs "≥ 60 is best"). Both appear on the page. This ambiguity is one
+  reason sex-based ranges were deferred (D6).
 
 **Developer review checklist (Step 4 task):**
 
@@ -260,6 +276,7 @@ least the entries you plan to use in the demo.
 **Commits:**
 - `feat(data): draft 10 explanation entries, all unreviewed`
 - `feat(explanations): add loader with alias lookup and review gate`
+- `feat(explanations): add category and nest low/high under interpretation`
 - `docs(notes): record step 4`
 
 ---

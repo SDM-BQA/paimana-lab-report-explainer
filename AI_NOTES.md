@@ -78,13 +78,16 @@ Claude appends one entry per step, under 150 words, using this format. Only real
 
 ### Step 4: Explanations data (branch `feat/explanations-data`, PR #__)
 - **Claude generated:** 10 draft entries (all `reviewed: false`), the loader, and 19 tests.
-- **I decided / changed:** pending: my review of each entry against its MedlinePlus source.
+- **I decided / changed:** added `category` and a nested `interpretation` (D5). Proposed
+  sex-based reference ranges, then deferred them to v2 after the sources showed none (D6).
+  Dropped a per-test `unit` field. Pending: my review of each entry against its source.
 - **What worked (instructions or prompts):** "include a real source" made Claude fetch each page
   before writing. Where a page did not say what a low or high result means, the field was left
   `null` instead of filled from memory.
 - **What went wrong or surprised me, and how it was caught:** Claude guessed a MedlinePlus URL
   for HDL that does not exist (HTTP 404). It was caught because the page was actually fetched;
   HDL now cites the Cholesterol Levels page. This is exactly why sources must be checked.
+  Checking the sources before building also stopped a feature: none gave sex-specific ranges.
 - **Developer note:**
 
 ## 4. Where AI Was Wrong (highlights)
