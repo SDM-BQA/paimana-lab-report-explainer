@@ -64,7 +64,7 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   with no env vars caught it. Fixed with zod 4's `error` option, and a test now covers it.
 - **Developer note:**
 
-### Step 3: Range engine (branch `feat/range-engine`, PR #__)
+### Step 3: Range engine (branch `feat/range-engine`, PR #3)
 - **Claude generated:** 41 parser and engine tests (written and committed first), then
   `rangeParser.ts` and `rangeEngine.ts`, and decision record D4.
 - **I decided / changed:** nothing changed yet. Open for me: should a value of exactly 200
@@ -74,6 +74,17 @@ Claude appends one entry per step, under 150 words, using this format. Only real
 - **What went wrong or surprised me, and how it was caught:** no issues found. All tests passed
   on the first run. To check that the tests were not too weak, Claude broke the engine on purpose
   twice (exclusive limits; no unit check), and the tests caught both.
+- **Developer note:**
+
+### Step 4: Explanations data (branch `feat/explanations-data`, PR #__)
+- **Claude generated:** 10 draft entries (all `reviewed: false`), the loader, and 19 tests.
+- **I decided / changed:** pending: my review of each entry against its MedlinePlus source.
+- **What worked (instructions or prompts):** "include a real source" made Claude fetch each page
+  before writing. Where a page did not say what a low or high result means, the field was left
+  `null` instead of filled from memory.
+- **What went wrong or surprised me, and how it was caught:** Claude guessed a MedlinePlus URL
+  for HDL that does not exist (HTTP 404). It was caught because the page was actually fetched;
+  HDL now cites the Cholesterol Levels page. This is exactly why sources must be checked.
 - **Developer note:**
 
 ## 4. Where AI Was Wrong (highlights)
