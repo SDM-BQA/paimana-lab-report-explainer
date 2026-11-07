@@ -477,13 +477,47 @@ extracted rows before analysis. Includes sample-report buttons and the privacy b
 **Checks:** Works against the local server. `npm run build` in `client/` passes (it type-checks).
 Errors show readable messages. Edited values are what get sent next.
 
-**How Claude did it:** _(fill in)_
+**How Claude did it:**
+- Backend first (D10): `/api/analyze` now recomputes `value` from `rawValue` and ignores a sent
+  value, so edits in the table cannot leave a stale number. New route test covers it.
+- Scaffolded with `create-vite@9.3.4 --template react-ts` in a scratch folder (so nothing in
+  `client/` was overwritten), then copied only config files. Added `strict` and
+  `noUncheckedIndexedAccess` to `tsconfig.app.json`; dropped the demo assets.
+- `src/api.ts`: one place for API calls; `VITE_API_URL` required in production builds;
+  user-safe error messages taken from `{ error }`; 90 s timeout (75 s for the health ping).
+- Components: privacy `Banner`, `ServerStatus` + `useServerStatus` (health ping on load,
+  "waking up" message after 2.5 s, retry), `UploadPanel` (4 synthetic samples copied from
+  `fixtures/` into `public/samples`, file upload with friendly size/type checks, manual entry),
+  `RowsTable` (every cell editable, add/remove rows, 60-row cap). A minimal results preview
+  lets edits be verified; the real results view is Step 9.
 
-**Verification:** _(fill in)_
+**Verification:**
+- `npm run build` (`tsc -b` + Vite): passes. `oxlint`: no warnings. Server `npm test`: 157/157.
+- Ran the API and Vite together and replayed the browser's requests with `curl`: the sample PDF
+  is served (HTTP 200); upload from origin `http://localhost:5173` returned 8 rows with
+  `Access-Control-Allow-Origin: http://localhost:5173`; after editing Hemoglobin from 11.2 to 14.5
+  (value not sent), analyze returned 14.5 → normal (11.2 would be low); three high rows got
+  curated explanations; disclaimer present. A request from another origin got the
+  `localhost:5173` header, which a browser rejects. API log: startup line only.
+- Not verified by Claude: clicking through the UI in a real browser (no browser available).
+  That is the developer's manual check.
 
-**Problems and fixes:** _(fill in)_
+**Problems and fixes:**
+- First build failed: the template enables `erasableSyntaxOnly`, which forbids the
+  `readonly status` constructor shorthand in `ApiError`. Rewritten as a plain field.
+- oxlint warned about files exporting both components and constants (breaks fast refresh) and a
+  synchronous `setState` inside an effect. Constants moved to `constants.ts`, the hook to
+  `useServerStatus.ts`, and the "checking" reset moved into `retry()`.
+- Copied an unused `report-02.pdf` sample; removed in the notes commit.
+- Claude's notes script failed again on a line-wrap mismatch, and because the shell commands
+  were not chained with `&&`, the first notes commit went out without this section. Fixed in a
+  second commit; later scripts stop on the first error (`set -e`).
 
-**Commits:** _(fill in)_
+**Commits:**
+- `feat(analyze): recompute value from rawValue on the server (D10)`
+- `feat(client): add upload, sample reports, and editable review table`
+- `docs(notes): record step 8 and decision D10` (D10, progress table, sample removal)
+- `docs(notes): record step 8 in the step log and AI notes`
 
 ---
 
