@@ -183,7 +183,7 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   Step 11 section of STEP_BY_STEP.md), including a real upload matching the truth file 40/40.
 - **Developer note:**
 
-### Step 12: Final docs (branch `docs/final`, PR #__)
+### Step 12: Final docs (branch `docs/final`, PR #15)
 - **Claude generated:** the README, the case study draft, decisions D11 to D13 with an index,
   and the live-deploy verification notes.
 - **I decided / changed:** deployed it myself on Render and Vercel with my own domain (D13).
@@ -192,6 +192,52 @@ Claude appends one entry per step, under 150 words, using this format. Only real
   examples of AI mistakes all come from this log, and the eval caveat is stated next to the 100%.
 - **What went wrong or surprised me, and how it was caught:** the draft miscounted the PRs (14 vs
   15), caught on re-read. All 16 relative links were checked by a script.
+- **Developer note:**
+
+### Step 13: UI refresh (branch `feat/ui-refresh`, PR #__)
+- **Claude generated:** the new visual design: colour tokens with dark mode, self-hosted fonts,
+  lucide icons, hero, step cards, drop zone, stat chips, and a new favicon.
+- **I decided / changed:** asked for a modern look with proper icons, font, and colours.
+- **What worked (instructions or prompts):** keeping logic untouched and checking real
+  screenshots (light, dark, and a synthetic-data results preview) instead of trusting the CSS.
+- **What went wrong or surprised me, and how it was caught:** a lint warning about mixed exports
+  (fixed by moving a constant); a clipped phone screenshot turned out to be a headless browser
+  viewport limit, checked by measuring the viewport width.
+- **Developer note:**
+
+### Step 13b: design pass (branch `feat/ui-refresh`, PR #__)
+- **Claude generated:** a "printed lab report" identity: paper and ink palette, Fraunces and
+  JetBrains Mono, a range meter built from the server's own range, a split hero with a synthetic
+  example, an asymmetric upload panel, a stacked phone table, and a new logo.
+- **I decided / changed:** ran the `/design-director` skill on the step 13 result.
+- **What worked (instructions or prompts):** reviewing against a list of named generic patterns
+  first, then checking every change in screenshots.
+- **What went wrong or surprised me, and how it was caught:** the first logo looked like a
+  medical cross at small size, and the meter band was too faint in dark mode. Both were caught
+  in screenshots and fixed.
+- **Developer note:**
+
+### Step 13c: guided tour (branch `feat/ui-refresh`, PR #__)
+- **Claude generated:** a six-step first-visit tour with spotlight, keyboard support, phone
+  bottom sheet, and a replay button, with no new dependency.
+- **I decided / changed:** asked for a guided tour; chose to add it to `feat/ui-refresh` instead
+  of a new branch.
+- **What worked (instructions or prompts):** testing by script (scroll positions, focus, stored
+  flag) rather than trusting screenshots alone.
+- **What went wrong or surprised me, and how it was caught:** smooth scrolling stopped part-way on
+  phone emulation and hid the target, found by logging scroll positions; a "fix" that delayed the
+  scroll did not work, so phones now scroll instantly.
+- **Developer note:**
+
+### Step 13d: video guide (branch `feat/ui-refresh`, PR #__)
+- **Claude generated:** a 29-second recording of the real app on a synthetic sample, as an MP4
+  in the tour's new "See it in action" step and a GIF in the README.
+- **I decided / changed:** asked for a GIF/video guide.
+- **What worked (instructions or prompts):** recording the real flow (not a mock-up), and cutting
+  the AI waits so the video stays short.
+- **What went wrong or surprised me, and how it was caught:** the recorder hung (headless Edge
+  stopped firing animation frames) and the first video was a third of the right length (frame
+  timestamps freeze when the screen is still). Both were found by logging and fixed in the script.
 - **Developer note:**
 
 ## 4. Where AI Was Wrong (highlights)

@@ -1,12 +1,18 @@
+import { BookOpen, CircleAlert, ClipboardList, Compass, LoaderCircle, Lock, ShieldCheck, TriangleAlert } from "lucide-react";
 import { useRef, useState } from "react";
 import { analyzeRows, ApiError, extractReport, type AnalyzeResponse, type Row } from "./api.ts";
 import { Banner } from "./components/Banner.tsx";
+import { Brand } from "./components/Brand.tsx";
 import { Footer } from "./components/Footer.tsx";
+import { GuidedTour } from "./components/GuidedTour.tsx";
+import { HeroSpecimen } from "./components/HeroSpecimen.tsx";
 import { ResultsView, type Language } from "./components/ResultsView.tsx";
 import { RowsTable } from "./components/RowsTable.tsx";
 import { ServerStatus } from "./components/ServerStatus.tsx";
+import { StepTitle } from "./components/StepTitle.tsx";
 import { UploadPanel } from "./components/UploadPanel.tsx";
 import { MAX_ROWS, type Sample } from "./constants.ts";
+import { hasSeenTour, markTourSeen } from "./tourSteps.ts";
 import { useServerStatus } from "./useServerStatus.ts";
 
 type Busy = null | "reading" | "checking";
@@ -25,6 +31,8 @@ export default function App() {
   // The exact rows that produced `analysis`, so a language switch re-checks the same data.
   const [checkedRows, setCheckedRows] = useState<Row[]>([]);
   const [language, setLanguage] = useState<Language>("en");
+  // Opens by itself on a first visit only; the top-bar button replays it.
+  const [touring, setTouring] = useState(() => !hasSeenTour());
   const nextId = useRef(1);
   const newId = () => `m${nextId.current++}`;
 
@@ -93,16 +101,48 @@ export default function App() {
     );
   }
 
+  function endTour() {
+    markTourSeen();
+    setTouring(false);
+  }
+
   return (
     <>
       <Banner />
       <main className="container">
-        <header>
-          <h1>Paimana</h1>
-          <p className="lead">
-            Upload a lab report or type values in. Plain code (not AI) checks each value against the range printed on the
-            report, and explains flagged results in simple words.
-          </p>
+        <div className="topbar">
+          <Brand />
+          <div className="topbar-actions">
+            <button type="button" className="text-button" onClick={() => setTouring(true)}>
+              <Compass className="icon" size={16} aria-hidden="true" />
+              Take the tour
+            </button>
+            <span className="pill">Demo</span>
+          </div>
+        </div>
+        <header className="hero">
+          <div className="hero-copy">
+            <p className="eyebrow">Lab report explainer</p>
+            <h1>
+              Understand your lab report <em>in plain words.</em>
+            </h1>
+            <p className="lead">
+              Upload a lab report or type values in. Plain code (not AI) checks each value against the range printed on
+              the report, and explains flagged results in simple words.
+            </p>
+            <ul className="features" data-tour="principles">
+              <li>
+                <ShieldCheck className="icon" size={18} aria-hidden="true" /> Flags decided by code, not AI
+              </li>
+              <li>
+                <BookOpen className="icon" size={18} aria-hidden="true" /> Reviewed explanations
+              </li>
+              <li>
+                <Lock className="icon" size={18} aria-hidden="true" /> Nothing is stored
+              </li>
+            </ul>
+          </div>
+          <HeroSpecimen />
         </header>
 
         <ServerStatus state={server.state} retry={server.retry} />
@@ -117,27 +157,40 @@ export default function App() {
 
         {busy === "reading" && (
           <p className="notice" role="status" aria-live="polite">
-            <span className="spinner" aria-hidden="true" /> Reading the report. This usually takes a few seconds.
+            <LoaderCircle className="icon spin" size={18} aria-hidden="true" />
+            <span>Reading the report. This usually takes a few seconds.</span>
           </p>
         )}
 
         {error && (
           <p className="notice notice-error" role="alert">
-            {error}
+            <CircleAlert className="icon" size={18} aria-hidden="true" />
+            <span>{error}</span>
           </p>
         )}
 
         {rows && (
           <section className="card" aria-labelledby="review-heading">
-            <h2 id="review-heading">2. Review the values</h2>
+            <div className="card-header">
+              <StepTitle id="review-heading" step={2}>
+                Review the values
+              </StepTitle>
+              <span className="source-chip">
+                <ClipboardList className="icon" size={14} aria-hidden="true" />
+                {source}
+              </span>
+            </div>
             <p className="hint">
-              {source}. The AI can misread a digit, so please compare each row with the report and fix anything that is
+              The AI can misread a digit, so please compare each row with the report and fix anything that is
               wrong. Only what is in this table gets checked.
             </p>
             {warnings.length > 0 && (
               <ul className="warnings">
                 {warnings.map((w) => (
-                  <li key={w}>{w}</li>
+                  <li key={w}>
+                    <TriangleAlert className="icon" size={16} aria-hidden="true" />
+                    {w}
+                  </li>
                 ))}
               </ul>
             )}
@@ -153,7 +206,15 @@ export default function App() {
             />
             <div className="actions">
               <button type="button" className="primary" disabled={busy !== null || rows.length === 0} onClick={check}>
-                {busy === "checking" ? "Checking…" : "Check these values"}
+                {busy === "checking" ? (
+                  <>
+                    <LoaderCircle className="icon spin" size={18} aria-hidden="true" /> Checking…
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck className="icon" size={18} aria-hidden="true" /> Check these values
+                  </>
+                )}
               </button>
             </div>
           </section>
@@ -170,6 +231,7 @@ export default function App() {
         )}
       </main>
       <Footer />
+      {touring && <GuidedTour onClose={endTour} />}
     </>
   );
 }

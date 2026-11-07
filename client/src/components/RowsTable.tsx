@@ -1,3 +1,4 @@
+import { Plus, Trash2 } from "lucide-react";
 import type { Row } from "../api.ts";
 import { MAX_ROWS } from "../constants.ts";
 
@@ -60,15 +61,16 @@ export function RowsTable({ rows, busy, onChange, onRemove, onAdd }: Props) {
                   onClick={() => onRemove(row.id)}
                   aria-label={`Remove row ${i + 1}${row.testName ? ` (${row.testName})` : ""}`}
                 >
-                  ✕
+                  <Trash2 className="icon" size={17} aria-hidden="true" />
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <button type="button" disabled={busy || rows.length >= MAX_ROWS} onClick={onAdd}>
-        + Add row
+      <button type="button" className="ghost" disabled={busy || rows.length >= MAX_ROWS} onClick={onAdd}>
+        <Plus className="icon" size={16} aria-hidden="true" />
+        Add row
       </button>
       {rows.length >= MAX_ROWS && <p className="hint">You can check up to {MAX_ROWS} rows at a time.</p>}
     </div>

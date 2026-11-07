@@ -24,7 +24,8 @@ step is done, review the PR diff yourself, merge it with a merge commit, then mo
 | 9 | `feat/client-results` | merged | #12 (review data: #11) |
 | 10 | `test/eval-and-safety` | merged | #13 |
 | 11 | `chore/deploy-config` | merged (live) | #14 |
-| 12 | `docs/final` | in review | |
+| 12 | `docs/final` | merged | #15 |
+| 13 | `feat/ui-refresh` | in review | |
 
 Status values: `not started`, `in progress`, `in review`, `merged`.
 
@@ -723,3 +724,161 @@ in any screenshot.
 - `docs(readme): write the full README`
 - `docs(case-study): draft the portfolio case study`
 - `docs(notes): record live deploy checks and step 12`
+
+---
+
+## Step 13: UI refresh
+**Branch:** `feat/ui-refresh`
+
+**Goal:** Make the client look modern (font, icons, colours) without changing any logic.
+
+**Ask Claude (as given):**
+> improve the frontend it so plain looking now add a modern look, with proper icons, font, colors
+> to make it look like modern
+
+**Checks:** `cd client && npm run build` (type check + build) and `npm run lint` pass. Status is
+never shown by colour alone. No real data in any preview.
+
+**How Claude did it:**
+- Added `lucide-react` (icons) and self-hosted variable fonts (Plus Jakarta Sans, Noto Sans
+  Devanagari for Hindi) through `@fontsource-variable`, so no request goes to a font CDN.
+- Rewrote `index.css` around colour tokens: a teal palette, automatic dark mode through
+  `prefers-color-scheme`, softer cards and shadows, and reduced-motion support.
+- Added a top bar and hero, numbered step titles (`StepTitle.tsx`), icon tiles for the three
+  input options with a drag-and-drop zone, icon buttons, summary stat chips, and status-striped
+  result cards. Replaced the Vite default favicon with a Paimana mark.
+- Status icons moved to `statusLook.ts`, so the badge keeps icon + word + colour.
+
+**Verification:**
+- `npm run build` and `npm run lint` pass with no warnings.
+- Screenshots with headless Edge of the built page in light and dark mode, and of the review
+  table and results on a temporary preview page fed with synthetic mock data (deleted before
+  committing). The live server was not running, so the real upload flow was not clicked through.
+
+**Problems and fixes:**
+- Lint warned that `StatusBadge.tsx` exported a constant next to a component (breaks fast
+  refresh); moved the map to `statusLook.ts`.
+- The phone screenshot looked clipped; a check showed headless Edge used a 492 px viewport, not
+  a CSS bug. Grid columns were still made overflow-safe with `min(250px, 100%)`.
+
+**Commits:**
+- `chore(client): add icon and self-hosted font packages`
+- `feat(client): give the interface a modern look`
+- `docs(notes): record step 13`
+
+### Step 13b: design pass (same branch)
+
+**Ask Claude (as given):** `/design-director` (a design-review skill), run on the step 13 result.
+
+**How Claude did it:**
+- Reviewed step 13 against the skill's anti-generic rules and found: a gradient headline,
+  background glow blobs, a gradient logo tile, a "sparkles" Demo pill, three identical upload
+  cards, one font for everything, an unstyled mobile table, and a static banner marked
+  `role="alert"`.
+- New identity, "printed lab report": warm paper background, ink teal plus a saffron accent,
+  and a separately designed dark palette. Fraunces (display) for headings, JetBrains Mono for
+  every value, unit and range. Both are self-hosted through `@fontsource-variable`.
+- Added `RangeMeter.tsx` and `meter.ts`, which draw the printed range as a band and the value as
+  a marker, using only the `range` the server's engine already returned. The flag still comes only
+  from the server; the meter is hidden from screen readers because the text next to it says the same thing.
+- Hero is now split: copy on the left, an example result slip on the right (`HeroSpecimen.tsx`,
+  synthetic values, reusing the real meter and badge). Upload is asymmetric: a sample list on the
+  left; drop zone and manual entry on the right. Results are one ledger instead of separate cards.
+- New logo and favicon: a pointer resting on a scale with a saffron reference band.
+- On phones the review table stacks into labelled blocks. The banner now uses `role="note"`.
+
+**Verification:**
+- `npm run build` (type check + build) and `npm run lint` pass.
+- Headless Edge screenshots of light and dark mode, plus results on a temporary synthetic-data
+  preview page (deleted before commit). Phone layout checked inside 375 px iframes:
+  `scrollWidth` equalled `clientWidth` on both pages, so no horizontal overflow. The live upload
+  flow was not clicked through (no server running).
+
+**Problems and fixes:**
+- The first logo drew the marker as a line crossing the track, which read as a plus sign or
+  medical cross at small size. Caught in the screenshot and changed to a pointer above the scale.
+- The meter's reference band was too faint in dark mode (caught in the screenshot); raised its
+  opacity.
+
+**Commits:**
+- `chore(client): add display and mono font packages`
+- `feat(client): give the interface a lab-report identity`
+- `docs(notes): record step 13 design pass`
+
+### Step 13c: guided tour (same branch)
+
+**Ask Claude (as given):** "add a guided tour system at the visit". Claude asked where it should
+go; the developer chose to add it to `feat/ui-refresh` because the tour targets the new layout.
+
+**How Claude did it:**
+- A custom tour with no new dependency: `GuidedTour.tsx` (spotlight, dialog, keyboard) and
+  `tourSteps.ts` (six steps: welcome, demo banner, "code decides", how to read a result, samples,
+  own input). Targets are `data-tour` attributes, so restyling cannot break them.
+- It opens by itself on a first visit, and "Take the tour" in the top bar replays it. The only
+  thing stored is a `paimana.tourSeen` flag in `localStorage`, never report data. Storage access
+  is wrapped in `try`/`catch`; if storage is blocked, the tour shows again.
+- Accessibility: `role="dialog"` with `aria-modal`, the page behind is `inert`, focus moves to the
+  main button and is trapped in the dialog, Escape closes, and the arrow keys move between steps.
+  Reduced motion turns off the animations.
+- The dialog sits below, above or beside the target (whichever fits); on phones it is a bottom sheet.
+
+**Verification:**
+- `npm run build` and `npm run lint` pass.
+- A Node script in the scratchpad drove headless Edge over the DevTools protocol at 1280 px
+  (light and dark) and 375 px (dark). It checked that the tour opens on a first visit, every step
+  title, keyboard and button navigation, `inert` on and off, the stored flag, that it stays closed
+  after a reload, the replay button, Escape, and no horizontal overflow. Screenshots of each step
+  were checked by eye. Not checked: focus returning to "Take the tour" after closing, because a
+  script click does not focus the button.
+
+**Problems and fixes:**
+- Type errors from `noUncheckedIndexedAccess` (`step`, focus-trap ends); fixed with a non-empty
+  tuple type and guards. A lint warning about `setState` in an effect was removed by relying on
+  the `ResizeObserver`'s first report.
+- At 375 px with mobile emulation, smooth scrolling sometimes stopped part-way, leaving the step
+  5 target under the bottom sheet (caught by logging scroll positions). Starting the scroll a
+  frame later did not help. It worked with mobile emulation off, so it may be an emulation quirk,
+  but phones now scroll instantly to be safe. Separately, the first test run reported false
+  failures because the script sent key events wrongly; the script was fixed, not the app.
+
+**Commits:**
+- `feat(client): add a first-visit guided tour`
+- `docs(notes): record step 13c`
+
+### Step 13d: video guide (same branch)
+
+**Ask Claude (as given):** "can we use a gif video also as guide can u make it"
+
+**How Claude did it:**
+- Recorded the real app locally (server + client) with headless Edge over the DevTools protocol,
+  using the synthetic "Mixed results" sample: read report → review table → check → results →
+  switch to Hindi. A drawn cursor was added in the page only during recording. The waits for
+  Gemini were cut out of the video. The recording made two real Gemini calls (extract and Hindi
+  rephrase) on synthetic data.
+- Encoded with a throwaway `ffmpeg-static` binary in the scratchpad (not a project dependency):
+  `client/public/guide/paimana-guide.mp4` (about 0.6 MB, 960 px, 29 s) with a poster image, and
+  `docs/media/paimana-guide.gif` (about 2.2 MB, 640 px) for the README.
+- Added a "See it in action" step (step 2 of 7) to the tour, with a wider dialog. The video is
+  muted, loops, has controls so it can be paused (WCAG 2.2.2), does not autoplay with reduced
+  motion, and only loads when that step opens. The README shows the GIF at the top.
+- The Hindi text in the video is real app output (AI-translated from reviewed text and
+  safety-checked), frozen at recording time.
+
+**Verification:**
+- `npm run build` and `npm run lint` pass.
+- Still frames from the video were checked by eye at 4, 10, 16 and 27 seconds, plus one GIF frame.
+- The tour check script, updated for 7 steps, confirmed the video plays in the tour at 1280 px
+  and 375 px. The other tour checks still pass.
+
+**Problems and fixes:**
+- The first recording run hung; logging each step showed the scroll helper waiting on
+  `requestAnimationFrame`, which headless Edge stopped firing. It was switched to a timer loop.
+- The first video was 10.7 s instead of about 30 s: screencast frame timestamps do not advance
+  while the screen is still, so pauses collapsed. Frames are now timed by arrival.
+- The first GIF was 3.8 MB; re-encoded at 640 px, 6 fps, 64 colours to 2.2 MB.
+- The recording script lives only in the scratchpad (machine-specific paths), so re-recording
+  after UI changes needs it rewritten or added to the repo.
+
+**Commits:**
+- `feat(client): add a video walkthrough to the tour and README`
+- `docs(notes): record step 13d`
