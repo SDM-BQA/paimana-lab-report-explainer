@@ -32,6 +32,8 @@ export type Explanation = ExplanationEntry & { key: string };
 export interface ExplanationIndex {
   /** Returns the reviewed entry for a printed test name, or null. Exact alias match only. */
   find(testName: string): Explanation | null;
+  /** The canonical key for a test name, reviewed or not (it is a name, not medical text). */
+  keyFor(testName: string): string | null;
   readonly reviewedCount: number;
 }
 
@@ -74,17 +76,22 @@ export function createExplanationIndex(file: ExplanationFile): ExplanationIndex 
     if (entry.reviewed) reviewedCount += 1;
   }
 
+  function keyFor(testName: string): string | null {
+    for (const name of candidateNames(testName)) {
+      const key = byName.get(name);
+      if (key !== undefined) return key;
+    }
+    return null;
+  }
+
   return {
     reviewedCount,
+    keyFor,
     find(testName) {
-      for (const name of candidateNames(testName)) {
-        const key = byName.get(name);
-        if (key === undefined) continue;
-        const entry = file[key];
-        // Unreviewed entries still resolve the name, but are never returned.
-        return entry?.reviewed ? { key, ...entry } : null;
-      }
-      return null;
+      const key = keyFor(testName);
+      const entry = key === null ? undefined : file[key];
+      // Unreviewed entries still resolve the name, but are never returned.
+      return key !== null && entry?.reviewed ? { key, ...entry } : null;
     },
   };
 }

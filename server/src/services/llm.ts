@@ -1,6 +1,11 @@
 import { GoogleGenAI, type GenerateContentParameters, type GenerateContentResponse } from "@google/genai";
 import type { Config } from "../config.js";
-import { EXTRACTION_JSON_SCHEMA, EXTRACTION_SYSTEM_PROMPT } from "./prompts.js";
+import {
+  EXTRACTION_JSON_SCHEMA,
+  EXTRACTION_SYSTEM_PROMPT,
+  REPHRASE_JSON_SCHEMA,
+  REPHRASE_SYSTEM_PROMPT,
+} from "./prompts.js";
 
 // Every Gemini call goes through this file (CLAUDE.md), so tests can swap in a fake and nothing
 // else needs to know about the SDK. Nothing here logs prompts, files, or responses.
@@ -13,7 +18,16 @@ export interface UploadedFile {
 export interface LlmClient {
   /** Returns the model's raw JSON text for the extraction schema. Callers must validate it. */
   extractRowsJson(file: UploadedFile): Promise<string>;
+  /** Returns raw JSON `{ items: [{ id, text }] }` with each text rewritten in Hindi. Validate and lint it. */
+  rephraseJson(items: RephraseItem[], language: "hi"): Promise<string>;
 }
+
+export interface RephraseItem {
+  id: string;
+  text: string;
+}
+
+const LANGUAGE_NAMES = { hi: "Hindi" } as const;
 
 /** The provider is unreachable, timed out, or failed. Maps to HTTP 502. */
 export class LlmUnavailableError extends Error {
@@ -95,6 +109,24 @@ export function createGeminiClient(
           temperature: 0,
           // Ask the API not to log this request. Free-tier inputs may still be used by Google
           // (see the pricing page), which is why the UI warns against real reports.
+          store: false,
+        },
+      });
+    },
+
+    rephraseJson(items, language) {
+      return withRetry({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: `Language: ${LANGUAGE_NAMES[language]}\nItems:\n${JSON.stringify({ items })}` }],
+          },
+        ],
+        config: {
+          systemInstruction: REPHRASE_SYSTEM_PROMPT,
+          responseMimeType: "application/json",
+          responseJsonSchema: REPHRASE_JSON_SCHEMA,
+          temperature: 0,
           store: false,
         },
       });

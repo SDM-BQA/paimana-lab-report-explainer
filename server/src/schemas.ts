@@ -29,3 +29,40 @@ export interface ExtractResponse {
   rows: Row[];
   warnings: string[];
 }
+
+export const LanguageSchema = z.enum(["en", "hi"]);
+
+export const AnalyzeRequestSchema = z.strictObject({
+  language: LanguageSchema,
+  rows: z.array(RowSchema).min(1).max(MAX_ROWS),
+});
+export type AnalyzeRequest = z.infer<typeof AnalyzeRequestSchema>;
+
+/** What the model must return when rewriting explanations. */
+export const RephraseOutputSchema = z.object({
+  items: z.array(z.object({ id: z.string(), text: z.string() })),
+});
+
+export interface Explanation {
+  text: string;
+  language: "en" | "hi";
+  origin: "curated" | "rephrased";
+}
+
+export interface AnalyzeResult {
+  id: string;
+  testName: string;
+  canonicalKey: string | null;
+  value: number | null;
+  unit: string | null;
+  status: "low" | "normal" | "high" | "unchecked";
+  range: { low: number | null; high: number | null } | null;
+  reason: string;
+  explanation: Explanation | null;
+}
+
+export interface AnalyzeResponse {
+  results: AnalyzeResult[];
+  warnings: string[];
+  disclaimer: string;
+}

@@ -8,6 +8,7 @@ export const TEST_ORIGIN = "http://localhost:5173";
 /** Default fake: tests that never reach the LLM should fail loudly if they do. */
 export const unusedLlm: LlmClient = {
   extractRowsJson: () => Promise.reject(new Error("LLM should not be called in this test")),
+  rephraseJson: () => Promise.reject(new Error("LLM should not be called in this test")),
 };
 
 /** Starts the app on a random free port and returns its base URL plus a close function. */
